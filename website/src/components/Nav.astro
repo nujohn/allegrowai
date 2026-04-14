@@ -1,0 +1,95 @@
+---
+---
+
+<header class="nav-bar">
+  <nav class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="AllegrowAI home">
+      <span class="logo-word">Allegrow</span><span class="logo-accent">AI</span>
+    </a>
+    <div class="nav-links">
+      <a href="#work" class="nav-link">Work</a>
+      <a href="#approach" class="nav-link">Approach</a>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.25rem 0;
+    /* Subtle top gradient for readability over content */
+    background: linear-gradient(
+      to bottom,
+      rgba(15, 14, 13, 0.95) 0%,
+      rgba(15, 14, 13, 0.0) 100%
+    );
+    backdrop-filter: blur(0px);
+    transition: background 0.3s ease, backdrop-filter 0.3s ease;
+  }
+
+  .nav-bar.scrolled {
+    background: rgba(15, 14, 13, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    transition: opacity 0.2s;
+  }
+  .nav-logo:hover {
+    opacity: 0.8;
+  }
+
+  .logo-word {
+    color: var(--color-text);
+  }
+  .logo-accent {
+    color: var(--color-accent);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .nav-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-muted);
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+  .nav-link:hover {
+    color: var(--color-text);
+  }
+</style>
+
+<script>
+  const nav = document.querySelector('.nav-bar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav?.classList.add('scrolled');
+    } else {
+      nav?.classList.remove('scrolled');
+    }
+  }, { passive: true });
+</script>

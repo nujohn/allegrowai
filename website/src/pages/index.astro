@@ -1,0 +1,369 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ProjectFeature from '../components/ProjectFeature.astro';
+import { projects } from '../data/projects';
+---
+
+<Base>
+  <Nav />
+
+  <!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-dot"></span>
+        <span>AllegrowAI</span>
+      </div>
+
+      <h1 class="hero-headline">
+        Products built<br />
+        <em class="headline-accent">with craft.</em>
+      </h1>
+
+      <p class="hero-sub">
+        We build educational games, cultural platforms, and digital tools —
+        each one designed to actually be used, not just launched.
+      </p>
+
+      <div class="hero-cta-row">
+        <a href="#work" class="cta-primary">See the work</a>
+        <a href="#approach" class="cta-ghost">How we build</a>
+      </div>
+    </div>
+
+    <!-- Decorative grid lines -->
+    <div class="hero-grid" aria-hidden="true">
+      <div class="grid-line"></div>
+      <div class="grid-line"></div>
+      <div class="grid-line"></div>
+    </div>
+
+    <!-- Ambient glow -->
+    <div class="hero-glow" aria-hidden="true"></div>
+  </section>
+
+  <!-- ═══ WORK ════════════════════════════════════════════════════════════════ -->
+  <section id="work" class="work-section">
+    <div class="work-header">
+      <div class="section-label">
+        <span class="label-line"></span>
+        <span>Work</span>
+      </div>
+      <h2 class="work-title">What we've built</h2>
+    </div>
+
+    {projects.map((project, i) => (
+      <ProjectFeature
+        project={project}
+        reverse={i % 2 === 1}
+        index={i}
+      />
+    ))}
+  </section>
+
+  <!-- ═══ APPROACH ════════════════════════════════════════════════════════════ -->
+  <section id="approach" class="approach-section">
+    <div class="approach-inner">
+      <div class="section-label">
+        <span class="label-line"></span>
+        <span>Approach</span>
+      </div>
+      <h2 class="approach-title">How we build</h2>
+      <p class="approach-lead">
+        Small studio. High standards. We make things that are genuinely useful
+        and worth caring about.
+      </p>
+
+      <div class="principles-grid">
+        <div class="principle">
+          <div class="principle-icon">01</div>
+          <h3 class="principle-title">Craft over volume</h3>
+          <p class="principle-body">
+            We'd rather ship one thing that works beautifully than ten things
+            that are fine. Every detail — from typography to loading states —
+            reflects a deliberate choice.
+          </p>
+        </div>
+
+        <div class="principle">
+          <div class="principle-icon">02</div>
+          <h3 class="principle-title">Real use cases only</h3>
+          <p class="principle-body">
+            Everything here exists because someone needed it. ClockRacer started
+            as a practical learning tool. BayStrings grew out of a real gap in
+            how the Bay Area's classical music scene was represented online.
+          </p>
+        </div>
+
+        <div class="principle">
+          <div class="principle-icon">03</div>
+          <h3 class="principle-title">Systems thinking</h3>
+          <p class="principle-body">
+            BayStrings and SoCalStrings share a content model. ClockRacer
+            shares infrastructure across web and iOS. We build for the second
+            and third version, not just the first.
+          </p>
+        </div>
+
+        <div class="principle">
+          <div class="principle-icon">04</div>
+          <h3 class="principle-title">Independent by design</h3>
+          <p class="principle-body">
+            No VC pressure, no growth-at-all-costs mandate. We're a founder
+            studio that can make decisions based on what's right for the
+            product and the people using it.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Base>
+
+<style>
+  /* ── Hero ───────────────────────────────────────────────────── */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 7rem 0 5rem;
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 1.75rem;
+  }
+
+  .eyebrow-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .hero-headline {
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    color: var(--color-text);
+    margin: 0 0 1.5rem;
+  }
+
+  .headline-accent {
+    font-style: italic;
+    color: var(--color-accent);
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.1875rem);
+    color: var(--color-muted);
+    line-height: 1.7;
+    max-width: 52ch;
+    margin: 0 0 2.5rem;
+  }
+
+  .hero-cta-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .cta-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-accent);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .cta-primary:hover {
+    background: #d4743f;
+    transform: translateY(-1px);
+  }
+
+  .cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.875rem 2rem;
+    background: transparent;
+    color: var(--color-muted);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .cta-ghost:hover {
+    color: var(--color-text);
+    border-color: var(--color-muted);
+  }
+
+  /* Hero decoration */
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 3vw;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .grid-line {
+    width: 1px;
+    height: 60vh;
+    background: linear-gradient(to bottom, transparent, var(--color-border) 30%, var(--color-border) 70%, transparent);
+    margin: 0 2vw;
+    opacity: 0.5;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60vw;
+    height: 100%;
+    background: radial-gradient(ellipse at 80% 40%, rgba(232, 131, 74, 0.07) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Work section ───────────────────────────────────────────── */
+  .work-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .work-header {
+    padding: 5rem 0 3rem;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: 1rem;
+  }
+
+  .label-line {
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .work-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  /* ── Approach section ───────────────────────────────────────── */
+  .approach-section {
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding: 5rem 0 6rem;
+    margin-top: 5rem;
+  }
+
+  .approach-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .approach-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0.75rem 0 1.5rem;
+  }
+
+  .approach-lead {
+    font-size: 1.0625rem;
+    color: var(--color-muted);
+    line-height: 1.7;
+    max-width: 52ch;
+    margin: 0 0 4rem;
+  }
+
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem 3rem;
+  }
+
+  .principle {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .principle-icon {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+  }
+
+  .principle-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .principle-body {
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  /* ── Responsive ─────────────────────────────────────────────── */
+  @media (max-width: 680px) {
+    .principles-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .hero-grid {
+      display: none;
+    }
+  }
+</style>

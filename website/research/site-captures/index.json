@@ -1,0 +1,74 @@
+{
+  "capturedAt": "2026-04-04T17:58:00-07:00",
+  "sites": {
+    "clockracer": [
+      {
+        "slug": "home",
+        "url": "https://clockracer.com",
+        "title": "ClockRacer",
+        "image": "clockracer/home.png",
+        "meta": "clockracer/home.json"
+      },
+      {
+        "slug": "support",
+        "url": "https://clockracer.com/support",
+        "title": "ClockRacer",
+        "image": "clockracer/support.png",
+        "meta": "clockracer/support.json"
+      },
+      {
+        "slug": "privacy",
+        "url": "https://clockracer.com/privacy",
+        "title": "ClockRacer",
+        "image": "clockracer/privacy.png",
+        "meta": "clockracer/privacy.json"
+      }
+    ],
+    "baystrings": [
+      {
+        "slug": "home",
+        "url": "https://baystrings.org",
+        "title": "BayStrings | Violin Concerts, Resources, and Community in the Bay Area",
+        "image": "baystrings/home.png",
+        "meta": "baystrings/home.json"
+      },
+      {
+        "slug": "about",
+        "url": "https://baystrings.org/about.html",
+        "title": "About | BayStrings",
+        "image": "baystrings/about.png",
+        "meta": "baystrings/about.json"
+      },
+      {
+        "slug": "getting-started",
+        "url": "https://baystrings.org/getting-started.html",
+        "title": "Getting Started on Violin | BayStrings",
+        "image": "baystrings/getting-started.png",
+        "meta": "baystrings/getting-started.json"
+      }
+    ],
+    "socalstrings": [
+      {
+        "slug": "home",
+        "url": "https://socalstrings.org",
+        "title": "SoCalStrings | Violin Concerts, Resources, and Community in Southern California",
+        "image": "socalstrings/home.png",
+        "meta": "socalstrings/home.json"
+      },
+      {
+        "slug": "about",
+        "url": "https://socalstrings.org/about.html",
+        "title": "About | SoCalStrings",
+        "image": "socalstrings/about.png",
+        "meta": "socalstrings/about.json"
+      },
+      {
+        "slug": "youth-orchestras",
+        "url": "https://socalstrings.org/youth-orchestras-socal.html",
+        "title": "Youth Orchestras in Southern California: A Guide for Students and Families",
+        "image": "socalstrings/youth-orchestras.png",
+        "meta": "socalstrings/youth-orchestras.json"
+      }
+    ]
+  }
+}

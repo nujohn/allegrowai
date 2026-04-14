@@ -1,0 +1,162 @@
+{
+  "url": "https://clockracer.com/",
+  "title": "ClockRacer",
+  "capturedAt": "2026-04-05T01:10:35.814Z",
+  "toastTestId": "toast-perfect-round",
+  "files": [
+    "/Users/claudechen/Downloads/clockracer-level1-play-fullpage.png",
+    "/Users/claudechen/Downloads/clockracer-level1-toast-fullpage.png"
+  ],
+  "log": [
+    {
+      "q": 1,
+      "counterBefore": "1 / 10",
+      "usedAnswer": "0125",
+      "advanced": true,
+      "minDisp": 60,
+      "hourDisp": 312.5,
+      "minTrue": 150,
+      "hourTrue": 42.5,
+      "minutes": 25,
+      "hourRaw": 1,
+      "hourCandidates": [
+        1
+      ]
+    },
+    {
+      "q": 2,
+      "counterBefore": "2 / 10",
+      "usedAnswer": "0740",
+      "advanced": true,
+      "minDisp": 150,
+      "hourDisp": 140,
+      "minTrue": 240,
+      "hourTrue": 230,
+      "minutes": 40,
+      "hourRaw": 7,
+      "hourCandidates": [
+        7
+      ]
+    },
+    {
+      "q": 3,
+      "counterBefore": "3 / 10",
+      "usedAnswer": "0610",
+      "advanced": true,
+      "minDisp": 330,
+      "hourDisp": 95,
+      "minTrue": 60,
+      "hourTrue": 185,
+      "minutes": 10,
+      "hourRaw": 6,
+      "hourCandidates": [
+        6
+      ]
+    },
+    {
+      "q": 4,
+      "counterBefore": "4 / 10",
+      "usedAnswer": "0840",
+      "advanced": true,
+      "minDisp": 150,
+      "hourDisp": 170,
+      "minTrue": 240,
+      "hourTrue": 260,
+      "minutes": 40,
+      "hourRaw": 8,
+      "hourCandidates": [
+        8
+      ]
+    },
+    {
+      "q": 5,
+      "counterBefore": "5 / 10",
+      "usedAnswer": "1005",
+      "advanced": true,
+      "minDisp": 300,
+      "hourDisp": 212.49999999999997,
+      "minTrue": 30,
+      "hourTrue": 302.5,
+      "minutes": 5,
+      "hourRaw": 10,
+      "hourCandidates": [
+        10
+      ]
+    },
+    {
+      "q": 6,
+      "counterBefore": "6 / 10",
+      "usedAnswer": "0335",
+      "advanced": true,
+      "minDisp": 120,
+      "hourDisp": 17.5,
+      "minTrue": 210,
+      "hourTrue": 107.5,
+      "minutes": 35,
+      "hourRaw": 3,
+      "hourCandidates": [
+        3
+      ]
+    },
+    {
+      "q": 7,
+      "counterBefore": "7 / 10",
+      "usedAnswer": "1045",
+      "advanced": true,
+      "minDisp": 180,
+      "hourDisp": 232.5,
+      "minTrue": 270,
+      "hourTrue": 322.5,
+      "minutes": 45,
+      "hourRaw": 10,
+      "hourCandidates": [
+        10
+      ]
+    },
+    {
+      "q": 8,
+      "counterBefore": "8 / 10",
+      "usedAnswer": "1250",
+      "advanced": true,
+      "minDisp": 209.99999999999997,
+      "hourDisp": 295,
+      "minTrue": 300,
+      "hourTrue": 25,
+      "minutes": 50,
+      "hourRaw": 0,
+      "hourCandidates": [
+        12
+      ]
+    },
+    {
+      "q": 9,
+      "counterBefore": "9 / 10",
+      "usedAnswer": "0435",
+      "advanced": true,
+      "minDisp": 120,
+      "hourDisp": 47.5,
+      "minTrue": 210,
+      "hourTrue": 137.5,
+      "minutes": 35,
+      "hourRaw": 4,
+      "hourCandidates": [
+        4
+      ]
+    },
+    {
+      "q": 10,
+      "counterBefore": "10 / 10",
+      "usedAnswer": "0230",
+      "advanced": true,
+      "minDisp": 90,
+      "hourDisp": 345,
+      "minTrue": 180,
+      "hourTrue": 75,
+      "minutes": 30,
+      "hourRaw": 2,
+      "hourCandidates": [
+        2
+      ]
+    }
+  ]
+}
