@@ -39,14 +39,14 @@ export const projects: Project[] = [
     screenshotAlt: 'BobaHub store orders board on iPad',
     gallery: [
       {
-        src: '/screenshots/bobahub-customer-home.png',
-        alt: 'BobaHub customer iPhone home screen',
-        label: 'Customer iPhone',
+        src: '/screenshots/bobahub-customer-checkout.png',
+        alt: 'BobaHub customer checkout screen on iPhone',
+        label: 'Customer checkout',
       },
       {
         src: '/screenshots/bobahub-admin-menu.png',
         alt: 'BobaHub admin menu management screen',
-        label: 'Admin web',
+        label: 'Admin menu',
       },
     ],
     platform: 'iOS + Web + API',
