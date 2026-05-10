@@ -7,6 +7,11 @@ export interface Project {
   strengths: string[];
   screenshot: string;
   screenshotAlt: string;
+  gallery?: Array<{
+    src: string;
+    alt: string;
+    label?: string;
+  }>;
   platform?: string;
   url?: string;
   urlLabel?: string;
@@ -30,8 +35,20 @@ export const projects: Project[] = [
     url: 'https://admin.bobahub.app/login',
     urlLabel: 'admin.bobahub.app',
     ctaLabel: 'View live admin surface',
-    screenshot: '/screenshots/bobahub-admin-screen.png',
-    screenshotAlt: 'BobaHub admin login interface',
+    screenshot: '/screenshots/bobahub-store-board.png',
+    screenshotAlt: 'BobaHub store orders board on iPad',
+    gallery: [
+      {
+        src: '/screenshots/bobahub-customer-home.png',
+        alt: 'BobaHub customer iPhone home screen',
+        label: 'Customer iPhone',
+      },
+      {
+        src: '/screenshots/bobahub-admin-menu.png',
+        alt: 'BobaHub admin menu management screen',
+        label: 'Admin web',
+      },
+    ],
     platform: 'iOS + Web + API',
   },
   {
