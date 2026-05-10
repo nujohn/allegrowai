@@ -82,7 +82,7 @@ const { project, reverse = false, index } = Astro.props;
       {project.gallery && project.gallery.length > 0 && (
         <div class="project-feature__gallery" aria-label={`${project.name} supporting screenshots`}>
           {project.gallery.map((item) => (
-            <figure class="gallery-card">
+            <figure class={`gallery-card ${item.mode === 'portrait' ? 'gallery-card--portrait' : ''}`}>
               <div class="gallery-card__image-wrap">
                 <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
               </div>
@@ -324,7 +324,7 @@ const { project, reverse = false, index } = Astro.props;
   .project-feature__gallery {
     margin-top: 1rem;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.875rem;
     position: relative;
     z-index: 1;
@@ -351,6 +351,20 @@ const { project, reverse = false, index } = Astro.props;
     object-fit: cover;
     object-position: top center;
     display: block;
+  }
+
+  .gallery-card--portrait .gallery-card__image-wrap {
+    aspect-ratio: 10 / 18;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #121110;
+    padding: 0.5rem;
+  }
+
+  .gallery-card--portrait .gallery-card__image-wrap img {
+    object-fit: contain;
+    object-position: center;
   }
 
   .gallery-card__label {
@@ -386,6 +400,12 @@ const { project, reverse = false, index } = Astro.props;
     }
     .project-feature__description {
       max-width: 100%;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .project-feature__gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 

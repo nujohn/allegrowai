@@ -11,6 +11,7 @@ export interface Project {
     src: string;
     alt: string;
     label?: string;
+    mode?: 'default' | 'portrait';
   }>;
   platform?: string;
   url?: string;
@@ -39,9 +40,16 @@ export const projects: Project[] = [
     screenshotAlt: 'BobaHub store orders board on iPad',
     gallery: [
       {
-        src: '/screenshots/bobahub-customer-checkout.png',
-        alt: 'BobaHub customer checkout screen on iPhone',
-        label: 'Customer checkout',
+        src: '/screenshots/bobahub-customer-orders.png',
+        alt: 'BobaHub customer order history screen on iPhone',
+        label: 'Customer orders',
+        mode: 'portrait',
+      },
+      {
+        src: '/screenshots/bobahub-customer-rewards.png',
+        alt: 'BobaHub customer rewards screen on iPhone',
+        label: 'Customer rewards',
+        mode: 'portrait',
       },
       {
         src: '/screenshots/bobahub-admin-menu.png',
