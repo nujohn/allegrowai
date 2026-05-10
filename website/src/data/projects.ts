@@ -22,15 +22,15 @@ export const projects: Project[] = [
   {
     slug: 'bobahub',
     name: 'BobaHub',
-    tagline: 'Commerce ops across iOS, backend services, and production infrastructure.',
+    tagline: 'Commerce ops across iOS, backend services, payments, and production infrastructure.',
     description:
-      `BobaHub is a live full-stack product stack spanning customer and store iOS apps, admin tooling, backend APIs, printing flows, notifications, and production deployment. Recent work included standing up a single-VPS production bundle, wiring domains and TLS, and continuing store-side operational features.`,
+      `BobaHub is a live full-stack commerce stack spanning customer and store iOS apps, admin tooling, backend APIs, and production operations. Recent work included shipping a single-VPS deployment with Docker Compose, Caddy, Postgres, and Redis; advancing store-side workflows like Brother printing and auto-ready handling; and wiring the foundations for APNs order updates and Apple Pay checkout.`,
     tags: ['Commerce', 'iOS', 'Backend', 'Infra'],
     strengths: [
-      'Shipped a live VPS stack with Docker Compose, Caddy, Postgres, Redis, API, and admin web',
-      'Advanced iOS store operations: Brother printing, Bonjour discovery, and auto-ready workflows',
-      'Implemented APNs order-ready notifications and Apple Pay integration groundwork',
-      'Connected real production domains, DNS, HTTPS, and deployment documentation',
+      'Shipped a live VPS stack with Docker Compose, Caddy, Postgres, Redis, API, admin web, DNS, and HTTPS',
+      'Advanced iOS store operations with Brother printing, Bonjour discovery, and auto-ready workflows',
+      'Implemented APNs order-ready notification plumbing and Apple Pay integration groundwork',
+      'Documented and deployed the system as a real production environment, not just a local prototype',
     ],
     url: 'https://admin.bobahub.app/login',
     urlLabel: 'admin.bobahub.app',
