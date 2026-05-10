@@ -4,116 +4,161 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ProjectFeature from '../components/ProjectFeature.astro';
 import { projects } from '../data/projects';
+
+const capabilities = [
+  {
+    title: 'iOS + product execution',
+    body: 'Native app flows, progression systems, store operations, notifications, and release-minded UX.',
+  },
+  {
+    title: 'Backend + auth systems',
+    body: 'APIs, persistence, session state, notes/attachments, and the operational details that make products hold together.',
+  },
+  {
+    title: 'Deployment + infrastructure',
+    body: 'VPS provisioning, Docker Compose, Caddy, DNS, TLS, and shipping working environments instead of diagrams.',
+  },
+  {
+    title: 'AI-assisted workflows',
+    body: 'Structured prep tools, decision support, automation, and practical interfaces that help people think and act faster.',
+  },
+];
+
+const proofPoints = [
+  'Live VPS deployment for BobaHub with DNS, HTTPS, and documented production setup',
+  'TypingMaster progression redesign, persistence repair, and UI polish shipped through real iteration',
+  'Interview Prep auth/backend split, public stack repair, and saved-canvas persistence fix',
+  'ClockRacer and regional string platforms maintained as real public-facing products',
+];
 ---
 
 <Base>
   <Nav />
 
-  <!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
   <section class="hero">
     <div class="hero-inner">
-      <div class="hero-eyebrow">
-        <span class="eyebrow-dot"></span>
-        <span>AllegrowAI</span>
+      <div class="hero-copy">
+        <div class="hero-eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span>AllegrowAI</span>
+        </div>
+
+        <h1 class="hero-headline">
+          I design, build, and ship
+          <em class="headline-accent">real products.</em>
+        </h1>
+
+        <p class="hero-sub">
+          From iOS apps and game mechanics to backend systems, production infrastructure,
+          and AI-assisted workflows, the work here is meant to run in the real world —
+          not just look convincing in a mockup.
+        </p>
+
+        <div class="hero-cta-row">
+          <a href="#work" class="cta-primary">See selected work</a>
+          <a href="#capabilities" class="cta-ghost">What I ship</a>
+        </div>
       </div>
 
-      <h1 class="hero-headline">
-        Products built<br />
-        <em class="headline-accent">with craft.</em>
-      </h1>
-
-      <p class="hero-sub">
-        We build educational games, cultural platforms, and digital tools —
-        each one designed to actually be used, not just launched.
-      </p>
-
-      <div class="hero-cta-row">
-        <a href="#work" class="cta-primary">See the work</a>
-        <a href="#approach" class="cta-ghost">How we build</a>
+      <div class="hero-proof-card">
+        <div class="proof-label">Recent execution</div>
+        <ul class="proof-list">
+          {proofPoints.map((item) => <li>{item}</li>)}
+        </ul>
       </div>
     </div>
 
-    <!-- Decorative grid lines -->
-    <div class="hero-grid" aria-hidden="true">
-      <div class="grid-line"></div>
-      <div class="grid-line"></div>
-      <div class="grid-line"></div>
-    </div>
-
-    <!-- Ambient glow -->
     <div class="hero-glow" aria-hidden="true"></div>
   </section>
 
-  <!-- ═══ WORK ════════════════════════════════════════════════════════════════ -->
-  <section id="work" class="work-section">
-    <div class="work-header">
+  <section id="capabilities" class="capabilities-section">
+    <div class="section-shell">
       <div class="section-label">
         <span class="label-line"></span>
-        <span>Work</span>
+        <span>Capabilities</span>
       </div>
-      <h2 class="work-title">What we've built</h2>
+      <div class="capabilities-head">
+        <h2>Broad technical range, grounded in shipped work.</h2>
+        <p>
+          I like the messy middle: integrating product decisions, implementation detail,
+          and operations until the thing is actually useful.
+        </p>
+      </div>
+
+      <div class="capabilities-grid">
+        {capabilities.map((item) => (
+          <article class="capability-card">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="work-section">
+    <div class="section-shell work-header">
+      <div class="section-label">
+        <span class="label-line"></span>
+        <span>Selected work</span>
+      </div>
+      <h2>Recent projects that show how I operate</h2>
+      <p>
+        These are not just brand names. Each one demonstrates a different mix of product taste,
+        engineering execution, debugging discipline, and follow-through.
+      </p>
     </div>
 
     {projects.map((project, i) => (
-      <ProjectFeature
-        project={project}
-        reverse={i % 2 === 1}
-        index={i}
-      />
+      <ProjectFeature project={project} reverse={i % 2 === 1} index={i} />
     ))}
   </section>
 
-  <!-- ═══ APPROACH ════════════════════════════════════════════════════════════ -->
   <section id="approach" class="approach-section">
-    <div class="approach-inner">
+    <div class="section-shell approach-inner">
       <div class="section-label">
         <span class="label-line"></span>
         <span>Approach</span>
       </div>
-      <h2 class="approach-title">How we build</h2>
+      <h2>How I work</h2>
       <p class="approach-lead">
-        Small studio. High standards. We make things that are genuinely useful
-        and worth caring about.
+        I care about clear product thinking, careful implementation, and the last-mile work
+        that makes software usable under real conditions.
       </p>
 
       <div class="principles-grid">
         <div class="principle">
-          <div class="principle-icon">01</div>
-          <h3 class="principle-title">Craft over volume</h3>
-          <p class="principle-body">
-            We'd rather ship one thing that works beautifully than ten things
-            that are fine. Every detail — from typography to loading states —
-            reflects a deliberate choice.
+          <div class="principle-index">01</div>
+          <h3>Useful beats impressive</h3>
+          <p>
+            I want the product to solve an actual problem, survive contact with users,
+            and keep getting better after launch.
           </p>
         </div>
 
         <div class="principle">
-          <div class="principle-icon">02</div>
-          <h3 class="principle-title">Real use cases only</h3>
-          <p class="principle-body">
-            Everything here exists because someone needed it. ClockRacer started
-            as a practical learning tool. BayStrings grew out of a real gap in
-            how the Bay Area's classical music scene was represented online.
+          <div class="principle-index">02</div>
+          <h3>Product and engineering together</h3>
+          <p>
+            Strong interfaces come from understanding the system underneath them — and strong systems
+            need product judgment to matter.
           </p>
         </div>
 
         <div class="principle">
-          <div class="principle-icon">03</div>
-          <h3 class="principle-title">Systems thinking</h3>
-          <p class="principle-body">
-            BayStrings and SoCalStrings share a content model. ClockRacer
-            shares infrastructure across web and iOS. We build for the second
-            and third version, not just the first.
+          <div class="principle-index">03</div>
+          <h3>Debugging is part of the craft</h3>
+          <p>
+            A lot of the real value comes from fixing the stubborn bugs, deployment issues,
+            and state problems that block trust.
           </p>
         </div>
 
         <div class="principle">
-          <div class="principle-icon">04</div>
-          <h3 class="principle-title">Independent by design</h3>
-          <p class="principle-body">
-            No VC pressure, no growth-at-all-costs mandate. We're a founder
-            studio that can make decisions based on what's right for the
-            product and the people using it.
+          <div class="principle-index">04</div>
+          <h3>Ship, verify, refine</h3>
+          <p>
+            I prefer visible progress, working releases, and grounded proof over abstract promises.
           </p>
         </div>
       </div>
@@ -124,63 +169,77 @@ import { projects } from '../data/projects';
 </Base>
 
 <style>
-  /* ── Hero ───────────────────────────────────────────────────── */
   .hero {
     position: relative;
     min-height: 100svh;
     display: flex;
     align-items: center;
+    padding: 8rem 0 5rem;
     overflow: hidden;
-    padding: 7rem 0 5rem;
+  }
+
+  .section-shell,
+  .hero-inner {
+    width: min(1200px, calc(100% - 4rem));
+    margin: 0 auto;
   }
 
   .hero-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
     position: relative;
-    z-index: 2;
-  }
-
-  .hero-eyebrow {
-    display: flex;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr);
+    gap: 3rem;
     align-items: center;
-    gap: 0.625rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--color-muted);
-    letter-spacing: 0.04em;
-    margin-bottom: 1.75rem;
   }
 
-  .eyebrow-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
+  .hero-eyebrow,
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+  }
+
+  .eyebrow-dot,
+  .label-line {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 999px;
     background: var(--color-accent);
     flex-shrink: 0;
   }
 
+  .label-line {
+    width: 2rem;
+    height: 1px;
+    border-radius: 0;
+    background: linear-gradient(90deg, var(--color-accent), transparent);
+  }
+
   .hero-headline {
-    font-size: clamp(3.5rem, 9vw, 7.5rem);
-    font-weight: 800;
-    line-height: 1.0;
-    letter-spacing: -0.04em;
-    color: var(--color-text);
-    margin: 0 0 1.5rem;
+    margin: 1.25rem 0 1.25rem;
+    font-size: clamp(3.3rem, 8vw, 6.8rem);
+    line-height: 0.95;
+    letter-spacing: -0.05em;
   }
 
   .headline-accent {
-    font-style: italic;
+    display: block;
     color: var(--color-accent);
+    font-style: italic;
+    font-weight: 700;
   }
 
   .hero-sub {
-    font-size: clamp(1rem, 2vw, 1.1875rem);
-    color: var(--color-muted);
-    line-height: 1.7;
-    max-width: 52ch;
-    margin: 0 0 2.5rem;
+    max-width: 56ch;
+    font-size: clamp(1.02rem, 1.8vw, 1.18rem);
+    line-height: 1.85;
+    color: #b7b0aa;
+    margin: 0 0 2rem;
   }
 
   .hero-cta-row {
@@ -189,181 +248,185 @@ import { projects } from '../data/projects';
     flex-wrap: wrap;
   }
 
-  .cta-primary {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.875rem 2rem;
-    background: var(--color-accent);
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.9375rem;
-    border-radius: 8px;
-    border: 1px solid var(--color-accent);
-    transition: background 0.2s, transform 0.15s;
-  }
-  .cta-primary:hover {
-    background: #d4743f;
-    transform: translateY(-1px);
-  }
-
+  .cta-primary,
   .cta-ghost {
     display: inline-flex;
     align-items: center;
-    padding: 0.875rem 2rem;
-    background: transparent;
-    color: var(--color-muted);
+    justify-content: center;
+    padding: 0.9rem 1.4rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
     font-weight: 600;
-    font-size: 0.9375rem;
-    border-radius: 8px;
+    transition: 0.2s ease;
     border: 1px solid var(--color-border);
-    transition: color 0.2s, border-color 0.2s;
   }
-  .cta-ghost:hover {
+
+  .cta-primary {
+    background: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+  }
+
+  .cta-primary:hover {
+    transform: translateY(-1px);
+    background: #d4743f;
+  }
+
+  .cta-ghost {
     color: var(--color-text);
-    border-color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.02);
   }
 
-  /* Hero decoration */
-  .hero-grid {
+  .cta-ghost:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .hero-proof-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--color-border);
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  .proof-label {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    color: var(--color-accent-gold);
+    margin-bottom: 1rem;
+    letter-spacing: 0.04em;
+  }
+
+  .proof-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .proof-list li {
+    color: var(--color-text);
+    line-height: 1.75;
+    font-size: 0.98rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .proof-list li::before {
+    content: '';
     position: absolute;
-    inset: 0;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-right: 3vw;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  .grid-line {
-    width: 1px;
-    height: 60vh;
-    background: linear-gradient(to bottom, transparent, var(--color-border) 30%, var(--color-border) 70%, transparent);
-    margin: 0 2vw;
-    opacity: 0.5;
+    left: 0;
+    top: 0.7rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--color-accent);
   }
 
   .hero-glow {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 60vw;
-    height: 100%;
-    background: radial-gradient(ellipse at 80% 40%, rgba(232, 131, 74, 0.07) 0%, transparent 65%);
+    inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(232, 131, 74, 0.14), transparent 35%),
+      radial-gradient(circle at 10% 10%, rgba(200, 169, 110, 0.08), transparent 30%);
     pointer-events: none;
-    z-index: 1;
   }
 
-  /* ── Work section ───────────────────────────────────────────── */
-  .work-section {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  .work-header {
-    padding: 5rem 0 3rem;
-  }
-
-  .section-label {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    margin-bottom: 1rem;
-  }
-
-  .label-line {
-    display: inline-block;
-    width: 2rem;
-    height: 1px;
-    background: var(--color-accent);
-    flex-shrink: 0;
-  }
-
-  .work-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800;
-    color: var(--color-text);
-    margin: 0;
-  }
-
-  /* ── Approach section ───────────────────────────────────────── */
+  .capabilities-section,
   .approach-section {
-    background: var(--color-surface);
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-    padding: 5rem 0 6rem;
-    margin-top: 5rem;
+    padding: 2rem 0 6rem;
   }
 
+  .capabilities-head,
+  .work-header,
   .approach-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
+    max-width: 900px;
   }
 
-  .approach-title {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800;
-    color: var(--color-text);
-    margin: 0.75rem 0 1.5rem;
+  .capabilities-head h2,
+  .work-header h2,
+  .approach-inner h2 {
+    margin: 1rem 0;
+    font-size: clamp(2rem, 4vw, 3.5rem);
   }
 
+  .capabilities-head p,
+  .work-header p,
   .approach-lead {
-    font-size: 1.0625rem;
-    color: var(--color-muted);
-    line-height: 1.7;
-    max-width: 52ch;
-    margin: 0 0 4rem;
+    color: #b7b0aa;
+    line-height: 1.85;
+    font-size: 1.04rem;
+  }
+
+  .capabilities-grid {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .capability-card,
+  .principle {
+    border: 1px solid var(--color-border);
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+    border-radius: 18px;
+    padding: 1.35rem;
+  }
+
+  .capability-card h3,
+  .principle h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .capability-card p,
+  .principle p {
+    margin: 0;
+    color: #b7b0aa;
+    line-height: 1.8;
+    font-size: 1rem;
+  }
+
+  .work-section {
+    padding: 2rem 0 3rem;
   }
 
   .principles-grid {
+    margin-top: 2rem;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem 3rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
   }
 
-  .principle {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .principle-icon {
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
+  .principle-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+    background: rgba(232, 131, 74, 0.12);
     color: var(--color-accent);
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
   }
 
-  .principle-title {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: var(--color-text);
-    margin: 0;
-  }
-
-  .principle-body {
-    font-size: 0.9375rem;
-    color: var(--color-muted);
-    line-height: 1.75;
-    margin: 0;
-  }
-
-  /* ── Responsive ─────────────────────────────────────────────── */
-  @media (max-width: 680px) {
+  @media (max-width: 900px) {
+    .hero-inner,
+    .capabilities-grid,
     .principles-grid {
       grid-template-columns: 1fr;
-      gap: 2rem;
     }
-    .hero-grid {
-      display: none;
+
+    .hero {
+      padding-top: 7rem;
+    }
+
+    .section-shell,
+    .hero-inner {
+      width: min(1200px, calc(100% - 2rem));
     }
   }
 </style>
