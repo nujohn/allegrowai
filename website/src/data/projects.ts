@@ -12,9 +12,6 @@ export interface Project {
     alt: string;
     label?: string;
     mode?: 'default' | 'portrait' | 'wide';
-    // Portrait web screens are a slightly wider phone ratio than native;
-    // `fill` covers the card so they match the native cards' full height.
-    fill?: boolean;
     section?: string;
   }>;
   // 'phone' renders the lead image in a portrait phone frame instead of
@@ -64,10 +61,10 @@ export const projects: Project[] = [
       { src: '/screenshots/bobahub-admin-funnel.png', alt: 'BobaHub admin analytics funnel with daily event counts', label: 'Analytics', mode: 'wide', section: 'Admin console' },
       { src: '/screenshots/bobahub-admin-featured.png', alt: 'BobaHub admin featured-drink merchandising editor', label: 'Featured drink', mode: 'wide', section: 'Admin console' },
       // Mobile web storefront.
-      { src: '/screenshots/bobahub-web-home.png', alt: 'BobaHub web app home with featured drink', label: 'Home', mode: 'portrait', fill: true, section: 'On the web' },
-      { src: '/screenshots/bobahub-web-menu.png', alt: 'BobaHub web app menu with real drink photos and prices', label: 'Menu', mode: 'portrait', fill: true, section: 'On the web' },
-      { src: '/screenshots/bobahub-web-detail.png', alt: 'BobaHub web app drink customization with ice, sugar, and toppings', label: 'Customize', mode: 'portrait', fill: true, section: 'On the web' },
-      { src: '/screenshots/bobahub-web-checkout.png', alt: 'BobaHub web app checkout with pickup time and payment', label: 'Checkout', mode: 'portrait', fill: true, section: 'On the web' },
+      { src: '/screenshots/bobahub-web-home.png', alt: 'BobaHub web app home with featured drink', label: 'Home', mode: 'portrait', section: 'On the web' },
+      { src: '/screenshots/bobahub-web-menu.png', alt: 'BobaHub web app menu with real drink photos and prices', label: 'Menu', mode: 'portrait', section: 'On the web' },
+      { src: '/screenshots/bobahub-web-detail.png', alt: 'BobaHub web app drink customization with ice, sugar, and toppings', label: 'Customize', mode: 'portrait', section: 'On the web' },
+      { src: '/screenshots/bobahub-web-checkout.png', alt: 'BobaHub web app checkout with pickup time and payment', label: 'Checkout', mode: 'portrait', section: 'On the web' },
     ],
     platform: 'iOS · iPad · Web · Payments',
   },

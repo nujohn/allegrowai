@@ -117,7 +117,7 @@ for (const item of gallery) {
               )}
               <div class="project-feature__gallery">
                 {group.items.map((item) => (
-                  <figure class={`gallery-card ${item.mode === 'portrait' ? 'gallery-card--portrait' : ''} ${item.mode === 'wide' ? 'gallery-card--wide' : ''} ${item.fill ? 'gallery-card--fill' : ''}`}>
+                  <figure class={`gallery-card ${item.mode === 'portrait' ? 'gallery-card--portrait' : ''} ${item.mode === 'wide' ? 'gallery-card--wide' : ''}`}>
                     <div class="gallery-card__image-wrap">
                       <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
                     </div>
@@ -458,19 +458,6 @@ for (const item of gallery) {
   .gallery-card--portrait .gallery-card__image-wrap img {
     object-fit: contain;
     object-position: center;
-  }
-
-  /* Web phone screens render at a slightly wider phone ratio than the
-     native screenshots, so `contain` letterboxes them. `fill` covers the
-     card instead so they reach full height like the native cards (crops a
-     thin sliver of the side margins). */
-  .gallery-card--portrait.gallery-card--fill .gallery-card__image-wrap {
-    padding: 0;
-  }
-
-  .gallery-card--portrait.gallery-card--fill .gallery-card__image-wrap img {
-    object-fit: cover;
-    object-position: top center;
   }
 
   /* Wide landscape screens — iPad counter app + admin console. One per
