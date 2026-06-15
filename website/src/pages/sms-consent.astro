@@ -1,0 +1,52 @@
+---
+import LegalPage from '../layouts/LegalPage.astro';
+---
+
+<LegalPage
+  title="SMS Consent"
+  eyebrow="Messaging compliance"
+  description="How AllegrowAI collects optional consent before sending transactional SMS verification messages."
+>
+  <h2>SMS program purpose</h2>
+  <p>
+    AllegrowAI sends transactional SMS messages only when a user voluntarily requests
+    SMS-based authentication or account verification for an AllegrowAI-operated product
+    or workflow. The messages are limited to one-time passcodes, account verification,
+    and related security notices. AllegrowAI does not use this toll-free number for
+    marketing or promotional messaging.
+  </p>
+
+  <h2>How users opt in</h2>
+  <p>
+    Before SMS messages are sent, the user is shown an optional consent disclosure near
+    the phone number field or SMS verification action. The user can choose not to use
+    SMS where another sign-in or verification method is available.
+  </p>
+  <div class="notice">
+    <strong>Consent disclosure:</strong> By selecting SMS verification, you agree to
+    receive transactional verification text messages from AllegrowAI at the phone number
+    you provide. Consent is optional and is not a condition of purchase. Message
+    frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP
+    for help.
+  </div>
+
+  <h2>Message examples</h2>
+  <ul>
+    <li>Your AllegrowAI verification code is 123456. It expires in 10 minutes. Reply STOP to opt out or HELP for help. Msg & data rates may apply.</li>
+    <li>AllegrowAI: You are opted in to receive transactional verification codes. Msg & data rates may apply. Reply HELP for help or STOP to opt out.</li>
+    <li>AllegrowAI: For help, contact <a href="mailto:john@allegrowai.com">john@allegrowai.com</a>. Reply STOP to opt out. Msg & data rates may apply.</li>
+  </ul>
+
+  <h2>Opt-out and help</h2>
+  <p>
+    Users can reply STOP to opt out of further SMS messages from the toll-free number.
+    Users can reply HELP for support information, or contact
+    <a href="mailto:john@allegrowai.com">john@allegrowai.com</a>.
+  </p>
+
+  <h2>Related policies</h2>
+  <p>
+    See the <a href="/privacy">Privacy Policy</a> and
+    <a href="/terms">Terms & Conditions</a> for additional details.
+  </p>
+</LegalPage>

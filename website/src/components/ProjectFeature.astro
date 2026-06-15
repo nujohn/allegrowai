@@ -8,6 +8,21 @@ interface Props {
 }
 
 const { project, reverse = false, index } = Astro.props;
+
+// Group gallery items by their optional `section` label, preserving
+// order. When any item carries a section, we render each group under a
+// small heading (e.g. "iPhone app" / "On the web") so a project that
+// ships on multiple surfaces reads as clearly separated sets rather
+// than one undifferentiated grid.
+type GalleryItem = NonNullable<typeof project.gallery>[number];
+const gallery = project.gallery ?? [];
+const hasSections = gallery.some((g) => g.section);
+const galleryGroups: Array<{ section?: string; items: GalleryItem[] }> = [];
+for (const item of gallery) {
+  const last = galleryGroups[galleryGroups.length - 1];
+  if (last && last.section === item.section) last.items.push(item);
+  else galleryGroups.push({ section: item.section, items: [item] });
+}
 ---
 
 <section class={`project-feature ${reverse ? 'project-feature--reverse' : ''}`} id={project.slug}>
@@ -52,7 +67,7 @@ const { project, reverse = false, index } = Astro.props;
           </svg>
         </a>
       ) : (
-        <div class="project-feature__status">Captured from a fresh local build for portfolio review.</div>
+        <div class="project-feature__status">Live product — ask us for a walkthrough.</div>
       )}
     </div>
 
@@ -79,15 +94,27 @@ const { project, reverse = false, index } = Astro.props;
         </div>
       </div>
 
-      {project.gallery && project.gallery.length > 0 && (
-        <div class="project-feature__gallery" aria-label={`${project.name} supporting screenshots`}>
-          {project.gallery.map((item) => (
-            <figure class={`gallery-card ${item.mode === 'portrait' ? 'gallery-card--portrait' : ''}`}>
-              <div class="gallery-card__image-wrap">
-                <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+      {gallery.length > 0 && (
+        <div class="project-feature__galleries" aria-label={`${project.name} supporting screenshots`}>
+          {galleryGroups.map((group) => (
+            <div class="gallery-group">
+              {hasSections && group.section && (
+                <div class="gallery-group__heading">
+                  <span class="gallery-group__dot" aria-hidden="true"></span>
+                  <span>{group.section}</span>
+                </div>
+              )}
+              <div class="project-feature__gallery">
+                {group.items.map((item) => (
+                  <figure class={`gallery-card ${item.mode === 'portrait' ? 'gallery-card--portrait' : ''}`}>
+                    <div class="gallery-card__image-wrap">
+                      <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+                    </div>
+                    {item.label && <figcaption class="gallery-card__label">{item.label}</figcaption>}
+                  </figure>
+                ))}
               </div>
-              {item.label && <figcaption class="gallery-card__label">{item.label}</figcaption>}
-            </figure>
+            </div>
           ))}
         </div>
       )}
@@ -320,9 +347,38 @@ const { project, reverse = false, index } = Astro.props;
     display: block;
   }
 
+  .project-feature__galleries {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .gallery-group__heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent-gold);
+    margin-bottom: 0.85rem;
+  }
+
+  .gallery-group__dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
+
   /* Glow behind frame */
   .project-feature__gallery {
-    margin-top: 1rem;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.875rem;
