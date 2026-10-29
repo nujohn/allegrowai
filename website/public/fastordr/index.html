@@ -1,0 +1,2092 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>FastOrdr Owner Demo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one 1120px column. The demo is a three-lane stage (customer phone · kitchen iPad + printer · owner dashboard) under a step rail; money, pricing and hardware below are live calculators fed by the same sample order. */
+:root{
+  --bg:#FBF7F2; --surface:#FFFFFF; --sand:#F3ECE3; --ink:#1A1412; --ink-2:#42352F; --muted:#6E5F57;
+  --line:#E7DED2; --line-strong:#D6C7B6;
+  --brand:#D95E1C; --brand-strong:#B04315; --brand-soft:#FDE8DA; --on-brand:#FFFFFF;
+  --keep:#2E7D5B; --keep-soft:#E3F4EA;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --grid:#EEE6DC; --axis:#D6C7B6;
+  --m-tip:#7DBF9C; --m-tax:#CBBDB0; --m-card:#8F7E72;
+  --shadow:0 1px 2px rgba(26,20,18,.05),0 10px 28px -14px rgba(26,20,18,.2);
+  --focus:#D95E1C;
+  --bezel:#1E1916; --bezel-edge:#3A322D;
+  /* Device screens keep the real apps' own look in both themes. */
+  --app-bg:#F6EFE3; --app-card:#FFFFFF; --app-ink:#2A1E18; --app-muted:#7E6E63; --app-line:#EADFCF;
+  --app-brand:#D6502A; --app-brand-soft:#FBE3D6; --app-good:#2E8B57; --app-black:#141110; --app-white:#FFFFFF;
+  --pulse:rgba(214,80,42,.55); --pulse-k:rgba(61,203,129,.6);
+  --kds-bg:#14161A; --kds-panel:#1C1F24; --kds-card:#272B32; --kds-ink:#F2F3F5; --kds-muted:#9AA1AB; --kds-line:#323741;
+  --kds-new:#F5A524; --kds-prep:#5AA2FF; --kds-ready:#3DCB81; --kds-ready-soft:#1E3A2B; --kds-dark:#14161A; --kds-scrim:rgba(8,9,11,.62);
+  --paper:#FFFFFF; --paper-ink:#161616; --printer:#2B2E34; --printer-top:#3B3F47; --printer-slot:#0D0E10;
+  --dash-bg:#FAF8F5; --dash-card:#FFFFFF; --dash-chrome:#EFEAE4; --dash-ink:#1A1412; --dash-muted:#77685E; --dash-line:#ECE4DA;
+  --dash-brand:#D95E1C; --dash-good:#2E7D5B; --dash-good-soft:#E3F4EA; --dash-warn:#8F5A00; --dash-warn-soft:#FBEFD6;
+  --dash-blue:#1F5FAE; --dash-blue-soft:#E3EEFB; --dash-hl:#FFF7EF; --dash-off:#CFC5BA;
+  --dot-r:#FF5F57; --dot-y:#FEBC2E; --dot-g:#28C840;
+  --t1:#F3DCC6; --t2:#E8E2C2; --t3:#F6D3C8; --t4:#DAE7D1; --t5:#E9D7EA; --t6:#D5E3EF;
+  --g1:#94562A; --g2:#7A6E22; --g3:#AE4429; --g4:#4B7A37; --g5:#7B4B80; --g6:#3B6385;
+  --font:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15100D; --surface:#1F1814; --sand:#2A211C; --ink:#F6EEE7; --ink-2:#E2D5CB; --muted:#B3A296;
+    --line:#382C25; --line-strong:#4D3E35;
+    --brand:#EF7F47; --brand-strong:#F5A97D; --brand-soft:#3A2217; --on-brand:#1A0F0A;
+    --keep:#5BBF8E; --keep-soft:#1C3127;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --grid:#2C231E; --axis:#4D3E35;
+    --m-tip:#3E8A65; --m-tax:#5E4E44; --m-card:#8C7B70;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -14px rgba(0,0,0,.7);
+    --focus:#EF7F47; --bezel:#050404; --bezel-edge:#2E2723;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15100D; --surface:#1F1814; --sand:#2A211C; --ink:#F6EEE7; --ink-2:#E2D5CB; --muted:#B3A296;
+  --line:#382C25; --line-strong:#4D3E35;
+  --brand:#EF7F47; --brand-strong:#F5A97D; --brand-soft:#3A2217; --on-brand:#1A0F0A;
+  --keep:#5BBF8E; --keep-soft:#1C3127;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --grid:#2C231E; --axis:#4D3E35;
+  --m-tip:#3E8A65; --m-tax:#5E4E44; --m-card:#8C7B70;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -14px rgba(0,0,0,.7);
+  --focus:#EF7F47; --bezel:#050404; --bezel-edge:#2E2723;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{text-wrap:balance;margin:0;letter-spacing:-.02em}
+h2{font-size:clamp(24px,3vw,32px);line-height:1.15;font-weight:800}
+p{margin:0;text-wrap:pretty}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--brand-strong)}
+.sec{padding-block:56px}
+.sec-head{display:grid;gap:10px;margin-bottom:24px;max-width:70ch}
+.sec-head p{color:var(--ink-2);font-size:16.5px}
+.band{background:var(--sand)}
+.field-label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--sand);border-radius:12px}
+.seg button{border:0;background:transparent;color:var(--ink-2);font-weight:600;font-size:14px;padding:8px 14px;border-radius:9px;cursor:pointer}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.band .seg{background:var(--surface)}
+.band .seg button[aria-pressed="true"]{background:var(--sand);box-shadow:none}
+input[type="text"],input[type="number"]{font:15px var(--font);color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:9px 12px;min-width:0;width:100%}
+.ico{width:18px;height:18px;flex:none}
+
+/* Top bar + hero */
+.topbar{border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.01em}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:var(--brand);display:grid;place-items:center}
+.logo-mark svg{width:17px;height:17px;fill:var(--on-brand)}
+.topnav{display:flex;gap:2px;flex-wrap:wrap}
+.topnav a{color:var(--ink-2);text-decoration:none;font-size:14px;font-weight:600;padding:6px 10px;border-radius:8px}
+.topnav a:hover{background:var(--sand)}
+.top-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.seg.lang{padding:3px}
+.seg.lang button{padding:6px 11px;font-size:13.5px}
+/* Japanese wraps per character by default, which breaks headings mid-phrase.
+   auto-phrase breaks on phrase boundaries where the browser supports it. */
+:root[lang="ja"] h1,:root[lang="ja"] h2,:root[lang="ja"] h3{letter-spacing:0;word-break:auto-phrase}
+:root[lang="ja"] body{line-break:strict;overflow-wrap:break-word}
+/* Uppercasing does nothing to Japanese but mangles the Latin words left
+   inside it, so "iPad" came out "IPAD". */
+:root[lang="ja"] .eyebrow,
+:root[lang="ja"] .field-label,
+:root[lang="ja"] .lane-label,
+:root[lang="ja"] .a-sec,
+:root[lang="ja"] .a-item.out .a-pr,
+:root[lang="ja"] .a-gt,
+:root[lang="ja"] .a-eta-k,
+:root[lang="ja"] .k-colh,
+:root[lang="ja"] .k-new,
+:root[lang="ja"] .d-stat span,
+:root[lang="ja"] .keep-callout .k,
+:root[lang="ja"] .plan-month .k,
+:root[lang="ja"] .hw .role,
+:root[lang="ja"] .hw-total .k,
+:root[lang="ja"] .why-tag,
+:root[lang="ja"] .tk-k{text-transform:none}
+.hero .wrap{padding-block:44px 32px;display:grid;gap:16px}
+.hero h1{font-size:clamp(31px,4.6vw,48px);line-height:1.07;letter-spacing:-.03em;font-weight:800;max-width:21ch}
+.lede{font-size:18px;color:var(--ink-2);max-width:62ch}
+.setup{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-end;margin-top:10px;padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+.setup .name-field{flex:1 1 220px;max-width:340px}
+.setup-note{flex-basis:100%;font-size:13px;color:var(--muted)}
+
+/* Parties */
+.parties{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;padding-block:8px 48px}
+.party{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 14px;align-items:start}
+.party-ic{grid-row:span 3;width:44px;height:44px;border-radius:12px;background:var(--brand-soft);color:var(--brand-strong);display:grid;place-items:center}
+.party-ic svg{width:24px;height:24px}
+.party h3{font-size:17px}
+.party p{color:var(--ink-2);font-size:14.5px}
+.party .uses{font-size:12.5px;color:var(--muted);font-weight:600}
+
+/* Demo */
+#demo .wrap{padding-block:48px}
+.demo-top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
+.step-btn{display:flex;flex-direction:column;gap:3px;width:100%;height:100%;text-align:left;padding:10px;border-radius:12px;cursor:pointer;border:1px solid transparent;background:transparent}
+.step-btn:hover{background:color-mix(in srgb,var(--surface) 55%,transparent)}
+.step-btn .n{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.step-btn .n svg{width:14px;height:14px}
+.step-btn .t{font-size:13px;font-weight:600;color:var(--ink-2);line-height:1.25}
+.step-btn.done .n{color:var(--keep)}
+.step-btn[aria-current="step"]{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow)}
+.step-btn[aria-current="step"] .n{color:var(--brand-strong)}
+.step-btn[aria-current="step"] .t{color:var(--ink)}
+.progress{height:4px;border-radius:99px;background:var(--line);margin-top:10px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .4s ease}
+.caption{display:grid;gap:6px;margin:22px 0 22px;max-width:76ch;min-height:104px}
+.cap-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.who-chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink-2)}
+.who-chip svg{width:15px;height:15px}
+.cap-count{font-size:13px;color:var(--muted);font-weight:600}
+.caption h3{font-size:24px;line-height:1.2}
+.caption p{color:var(--ink-2);font-size:16px}
+.lane-tabs{display:none;margin-bottom:16px}
+.stage{display:grid;grid-template-columns:280px minmax(0,1.4fr) minmax(0,1fr);gap:22px;align-items:start}
+.lane{display:flex;flex-direction:column;gap:12px;align-items:center;min-width:0;transition:opacity .35s ease}
+.lane:not(.active){opacity:.5}
+.lane-label{align-self:stretch;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.lane-label svg{width:16px;height:16px}
+.lane.active .lane-label{color:var(--brand-strong)}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin-top:28px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;padding:10px 16px;border-radius:12px;cursor:pointer}
+.btn:hover{border-color:var(--ink-2)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.btn.primary:hover{background:var(--brand-strong);border-color:var(--brand-strong)}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--ink-2)}
+.btn svg{width:16px;height:16px}
+.kbd-hint{flex-basis:100%;text-align:center;font-size:12.5px;color:var(--muted)}
+
+.tap-here{animation:tap 1.7s ease-out infinite}
+@keyframes tap{0%{box-shadow:0 0 0 0 var(--pulse-c,var(--pulse))}70%{box-shadow:0 0 0 11px transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+/* Phone */
+.phone{width:280px;max-width:100%;aspect-ratio:280/584;background:var(--bezel);border-radius:46px;padding:10px;box-shadow:0 0 0 1px var(--bezel-edge),var(--shadow);position:relative;flex:none}
+.phone .screen{position:relative;height:100%;border-radius:36px;overflow:hidden;background:var(--app-bg);color:var(--app-ink)}
+.island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:82px;height:24px;border-radius:14px;background:var(--app-black);z-index:6}
+.a{position:absolute;inset:0;display:flex;flex-direction:column;font-size:13px;line-height:1.35}
+.sbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 6px;font-size:12px;font-weight:700;flex:none}
+.sb-r{display:flex;gap:5px;align-items:center}
+.sb-r i{display:block;background:var(--app-ink)}
+.sb-r .sig{width:15px;height:9px;clip-path:polygon(0 100%,100% 0,100% 100%)}
+.sb-r .bat{width:21px;height:10px;border-radius:3px}
+.a-scroll{flex:1;min-height:0;overflow:hidden;padding:8px 14px 84px;display:flex;flex-direction:column;gap:10px}
+.a-store{font-size:20px;font-weight:800;letter-spacing:-.01em;line-height:1.15;overflow-wrap:anywhere}
+.a-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.a-chip{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--app-card);border:1px solid var(--app-line)}
+.a-chip.hot{background:var(--app-brand-soft);border-color:transparent;color:var(--app-brand)}
+.a-sec{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--app-muted);margin-top:2px}
+.a-item{display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px 8px 8px;border-radius:14px;background:var(--app-card);border:0;text-align:left;font:inherit;color:inherit;width:100%}
+button.a-item{cursor:pointer}
+.thumb{width:50px;height:50px;border-radius:12px;display:grid;place-items:center}
+.thumb svg{width:34px;height:34px}
+.a-nm{font-weight:700;font-size:12.5px;line-height:1.25}
+.a-ds{font-size:10.5px;color:var(--app-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-pr{font-weight:800;font-size:12.5px;font-variant-numeric:tabular-nums}
+.a-item.out{opacity:.48}
+.a-item.out .a-pr{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--app-muted)}
+.a-tab{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 10px 20px;background:var(--app-card);border-top:1px solid var(--app-line)}
+.a-tab span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:700;color:var(--app-muted)}
+.a-tab span.on{color:var(--app-brand)}
+.a-tab svg{width:18px;height:18px}
+.a-banner{margin:4px 14px 0;border-radius:18px;height:118px;display:grid;place-items:center;position:relative;flex:none}
+.a-banner svg{width:80px;height:80px}
+.a-back{position:absolute;left:10px;top:10px;width:28px;height:28px;border-radius:50%;background:var(--app-card);display:grid;place-items:center;color:var(--app-ink)}
+.a-back svg{width:14px;height:14px}
+.a-name{font-size:17px;font-weight:800;line-height:1.2}
+.a-desc{font-size:11.5px;color:var(--app-muted)}
+.a-grp{display:flex;flex-direction:column;gap:6px}
+.a-gt{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--app-muted);display:flex;justify-content:space-between}
+.a-pills{display:flex;flex-wrap:wrap;gap:5px}
+.a-pill{border:1px solid var(--app-line);background:var(--app-card);color:var(--app-ink);font:600 11px var(--font);padding:5px 9px;border-radius:99px;cursor:pointer}
+.a-pill span{color:var(--app-muted)}
+.a-pill.on{background:var(--app-brand);border-color:var(--app-brand);color:var(--app-white)}
+.a-pill.on span{color:inherit;opacity:.85}
+.a-cta,.a-pay{position:absolute;left:14px;right:14px;bottom:18px;display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-radius:16px;border:0;background:var(--app-brand);color:var(--app-white);font:800 13.5px var(--font);cursor:pointer;font-variant-numeric:tabular-nums}
+.a-pay{bottom:34px;background:var(--app-black);justify-content:center;gap:8px}
+.a-pay svg{width:16px;height:16px}
+.a-fine{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:9.5px;color:var(--app-muted);font-weight:600}
+.a-title{font-size:19px;font-weight:800;line-height:1.2}
+.a-sub{font-size:11.5px;color:var(--app-muted);margin-top:-6px}
+.a-card{background:var(--app-card);border-radius:14px;padding:10px 12px}
+.a-li + .a-li{margin-top:8px;padding-top:8px;border-top:1px solid var(--app-line)}
+.a-line{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
+.a-opt{font-size:10.5px;color:var(--app-muted);margin-top:2px}
+.a-segc{display:grid;grid-template-columns:1fr 1fr;background:var(--app-line);border-radius:12px;padding:3px}
+.a-segc span{text-align:center;padding:6px;border-radius:9px;font-weight:700;font-size:11.5px;color:var(--app-muted)}
+.a-segc span.on{background:var(--app-card);color:var(--app-ink)}
+.a-eta{background:var(--app-brand-soft);border-radius:14px;padding:9px 12px;display:grid;gap:1px}
+.a-eta-k{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--app-brand)}
+.a-eta-v{font-size:17px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums}
+.a-eta-s{font-size:10px;color:var(--app-muted);line-height:1.3}
+.a-tot .r{display:flex;justify-content:space-between;font-size:11.5px;color:var(--app-muted);padding:1px 0;font-variant-numeric:tabular-nums}
+.a-tot .r.t{color:var(--app-ink);font-weight:800;font-size:13px;border-top:1px solid var(--app-line);margin-top:5px;padding-top:6px}
+.a-track{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.a-track div{display:flex;flex-direction:column;gap:5px;font-size:9.5px;font-weight:700;color:var(--app-muted)}
+.a-track div::before{content:"";height:5px;border-radius:99px;background:var(--app-line)}
+.a-track div.done::before{background:var(--app-brand)}
+.a-track div.cur{color:var(--app-ink)}
+.a-track div.cur::before{background:var(--app-brand);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+.a-big{font-size:18px;font-weight:800;line-height:1.2}
+.a-small{font-size:11.5px;color:var(--app-muted);margin-top:3px}
+.a-code{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:700;color:var(--app-muted)}
+.a-code b{font:800 21px var(--mono);letter-spacing:.08em;color:var(--app-ink)}
+.a-ready{background:var(--app-good);color:var(--app-white);border-radius:18px;padding:16px 14px;text-align:center}
+.a-ready .big{font-size:19px;font-weight:800}
+.a-ready .code{font:800 36px var(--mono);letter-spacing:.12em;margin:6px 0 2px}
+.a-ready .small{font-size:11.5px;opacity:.9}
+.a-again{display:block;width:100%;border:1.5px solid var(--app-brand);color:var(--app-brand);background:transparent;border-radius:14px;padding:10px;font:800 12.5px var(--font);text-align:center}
+
+/* iPad kitchen screen */
+.ipad{width:100%;max-width:560px;aspect-ratio:4/3;background:var(--bezel);border-radius:26px;padding:12px;box-shadow:0 0 0 1px var(--bezel-edge),var(--shadow)}
+.ipad .screen{position:relative;height:100%;border-radius:14px;overflow:hidden;background:var(--kds-bg);color:var(--kds-ink);container-type:inline-size}
+.kds{position:absolute;inset:0;display:flex;flex-direction:column;font-size:clamp(8px,2.55cqw,13px);line-height:1.3}
+.k-head{display:flex;align-items:center;gap:.6em;padding:.75em 1em;border-bottom:1px solid var(--kds-line);background:var(--kds-panel);white-space:nowrap}
+.k-head b{font-size:1.12em;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.k-head .k-muted{color:var(--kds-muted)}
+.k-sp{flex:1}
+.k-pill{font-size:.85em;font-weight:700;color:var(--kds-ready);background:var(--kds-ready-soft);padding:.25em .7em;border-radius:99px}
+.k-clock{color:var(--kds-muted);font-variant-numeric:tabular-nums}
+.k-cols{flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6em;padding:.7em;min-height:0}
+.k-col{background:var(--kds-panel);border-radius:.8em;padding:.6em;display:flex;flex-direction:column;gap:.5em;min-width:0;overflow:hidden}
+.k-colh{display:flex;justify-content:space-between;font-weight:800;font-size:.8em;letter-spacing:.08em;text-transform:uppercase}
+.k-col.new .k-colh span:first-child{color:var(--kds-new)}
+.k-col.prep .k-colh span:first-child{color:var(--kds-prep)}
+.k-col.ready .k-colh span:first-child{color:var(--kds-ready)}
+.k-colh span:last-child{color:var(--kds-muted)}
+.k-card{background:var(--kds-card);border-radius:.7em;padding:.6em .65em;display:flex;flex-direction:column;gap:.35em;border-top:.25em solid var(--kds-line)}
+.k-card.new{border-top-color:var(--kds-new)}
+.k-card.prep{border-top-color:var(--kds-prep)}
+.k-card.ready{border-top-color:var(--kds-ready)}
+.k-card.mine{animation:slidein .45s ease-out}
+@keyframes slidein{from{transform:translateY(-.6em);opacity:0}}
+.k-row{display:flex;justify-content:space-between;align-items:baseline;gap:.4em}
+.k-code{font-weight:800;font-size:1.08em;font-family:var(--mono)}
+.k-meta{color:var(--kds-muted);font-size:.82em}
+.k-items{font-size:.86em;line-height:1.35}
+.k-items div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.k-items .o{color:var(--kds-muted);font-size:.92em}
+.k-bar{height:.35em;background:var(--kds-line);border-radius:99px;overflow:hidden}
+.k-bar i{display:block;height:100%;background:var(--kds-prep);border-radius:99px;width:var(--w,30%);transition:width 1s linear}
+.k-btn{border:0;border-radius:.6em;padding:.55em .7em;font:inherit;font-weight:800;cursor:pointer;width:100%}
+.k-btn.go{background:var(--kds-ready);color:var(--kds-dark);--pulse-c:var(--pulse-k)}
+.k-btn.ghost{background:transparent;color:var(--kds-muted);border:1px solid var(--kds-line)}
+.k-btn.skip{background:var(--kds-line);color:var(--kds-ink);--pulse-c:rgba(90,162,255,.55)}
+.k-empty{color:var(--kds-muted);font-size:.84em;text-align:center;padding:1.2em .3em}
+.k-foot{padding:.5em 1em;color:var(--kds-muted);font-size:.82em;border-top:1px solid var(--kds-line);display:flex;justify-content:space-between}
+.k-modal-wrap{position:absolute;inset:0;background:var(--kds-scrim);display:grid;place-items:center;animation:fade .25s ease-out}
+@keyframes fade{from{opacity:0}}
+.k-modal{width:74%;background:var(--kds-card);border-radius:1em;padding:1em 1.1em;display:flex;flex-direction:column;gap:.6em;animation:chime 1.5s ease-out infinite}
+@keyframes chime{0%{box-shadow:0 0 0 .18em var(--kds-new),0 0 0 .18em rgba(245,165,36,.55)}70%{box-shadow:0 0 0 .18em var(--kds-new),0 0 0 1.6em rgba(245,165,36,0)}100%{box-shadow:0 0 0 .18em var(--kds-new),0 0 0 .18em rgba(245,165,36,0)}}
+.k-mtop{display:flex;align-items:center;gap:.6em}
+.k-new{background:var(--kds-new);color:var(--kds-dark);font-weight:800;font-size:.8em;padding:.2em .6em;border-radius:99px;text-transform:uppercase;letter-spacing:.06em}
+.k-chip{border:1px solid var(--kds-line);color:var(--kds-ink);font-size:.8em;font-weight:700;padding:.15em .55em;border-radius:99px}
+.k-lines{list-style:none;margin:0;padding:.5em 0;border-block:1px solid var(--kds-line);display:flex;flex-direction:column;gap:.4em}
+.k-lines .o{color:var(--kds-muted);font-size:.88em}
+.k-actions{display:grid;grid-template-columns:1fr 2fr;gap:.5em}
+
+/* Printer */
+.kitchen-extra{display:flex;gap:18px;align-items:flex-start;width:100%;max-width:560px}
+.printer{position:relative;width:150px;height:226px;flex:none}
+.pr-body{position:relative;z-index:2;height:52px;border-radius:12px 12px 10px 10px;background:var(--printer);box-shadow:inset 0 6px 0 var(--printer-top)}
+.pr-body::after{content:"";position:absolute;left:16px;right:16px;bottom:9px;height:4px;border-radius:2px;background:var(--printer-slot)}
+.pr-led{position:absolute;right:13px;top:16px;width:6px;height:6px;border-radius:50%;background:var(--kds-ready)}
+.paper{position:absolute;z-index:1;left:22px;right:22px;top:44px;background:var(--paper);color:var(--paper-ink);font:9px/1.42 var(--mono);padding:9px 8px 11px;clip-path:inset(0 0 100% 0);transition:clip-path 1.3s steps(14,end);box-shadow:0 8px 16px -8px rgba(0,0,0,.45)}
+.paper.out{clip-path:inset(0 0 0 0)}
+.paper b{font-weight:800}
+.paper .big{font-size:13px;font-weight:800;letter-spacing:.04em}
+.paper hr{border:0;border-top:1px dashed var(--paper-ink);margin:5px 0;opacity:.5}
+.paper .o{padding-left:1.4em}
+.printer-copy{display:grid;gap:4px;padding-top:4px;min-width:0}
+.printer-copy b{font-size:14px}
+.printer-copy p{font-size:13px;color:var(--ink-2)}
+.printer-copy span{font-size:12px;color:var(--muted)}
+
+/* Owner dashboard */
+.browser{width:100%;max-width:560px;border-radius:12px;overflow:hidden;background:var(--dash-bg);box-shadow:0 0 0 1px var(--line-strong),var(--shadow);color:var(--dash-ink)}
+.chrome{display:flex;gap:6px;align-items:center;height:26px;padding:0 12px;background:var(--dash-chrome);border-bottom:1px solid var(--dash-line)}
+.chrome i{width:9px;height:9px;border-radius:50%;background:var(--dot-r)}
+.chrome i:nth-child(2){background:var(--dot-y)}
+.chrome i:nth-child(3){background:var(--dot-g)}
+.dash{container-type:inline-size}
+.d-wrap{font-size:clamp(10px,3.75cqw,13px);line-height:1.35}
+.d-tabs{display:flex;gap:.2em;border-bottom:1px solid var(--dash-line);padding:0 .6em;background:var(--dash-card);overflow:hidden}
+.d-tab{padding:.75em .55em .6em;font-weight:600;color:var(--dash-muted);border-bottom:2px solid transparent;font-size:.92em;white-space:nowrap}
+.d-tab.on{color:var(--dash-ink);border-color:var(--dash-brand)}
+.d-in{padding:.9em;display:flex;flex-direction:column;gap:.75em;min-height:29em}
+.d-h{font-weight:800;font-size:1.02em;display:flex;align-items:center;justify-content:space-between;gap:.5em}
+.d-h small{font-weight:600;color:var(--dash-muted);font-size:.82em}
+.d-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5em}
+.d-stat{background:var(--dash-card);border:1px solid var(--dash-line);border-radius:.7em;padding:.55em .65em;min-width:0}
+.d-stat span{display:block;font-size:.76em;color:var(--dash-muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.d-stat b{font-size:1.12em;font-variant-numeric:tabular-nums}
+.d-stat.bump b{display:inline-block;animation:bump .7s ease-out}
+@keyframes bump{30%{transform:scale(1.12);color:var(--dash-good)}}
+.d-box{background:var(--dash-card);border:1px solid var(--dash-line);border-radius:.7em;overflow:hidden}
+.d-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:.6em;align-items:center;padding:.55em .7em;border-top:1px solid var(--dash-line);font-size:.92em}
+.d-row:first-child{border-top:0}
+.d-row.mine{background:var(--dash-hl)}
+.d-row .c{font-family:var(--mono);font-weight:700}
+.d-row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d-row .amt{font-variant-numeric:tabular-nums;font-weight:700}
+.st{font-size:.76em;font-weight:800;padding:.2em .6em;border-radius:99px;white-space:nowrap}
+.st.new{background:var(--dash-warn-soft);color:var(--dash-warn)}
+.st.prep{background:var(--dash-blue-soft);color:var(--dash-blue)}
+.st.ready{background:var(--dash-good-soft);color:var(--dash-good)}
+.st.done{background:var(--dash-line);color:var(--dash-muted)}
+.d-break{padding:.2em .8em}
+.d-break .r{display:flex;justify-content:space-between;gap:.6em;padding:.5em 0;border-top:1px solid var(--dash-line);font-variant-numeric:tabular-nums}
+.d-break .r:first-child{border-top:0}
+.d-break .r span:first-child{color:var(--dash-muted)}
+.d-break .r.neg span:last-child{color:var(--dash-ink)}
+.d-break .r.total{font-weight:800}
+.d-break .r.total span{color:var(--dash-good)!important}
+.d-note{font-size:.84em;color:var(--dash-muted)}
+.d-mi{display:flex;align-items:center;gap:.65em;padding:.55em .7em;border-top:1px solid var(--dash-line)}
+.d-mi:first-child{border-top:0}
+.d-mi .nm{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d-mi .pr{font-variant-numeric:tabular-nums;color:var(--dash-muted)}
+.d-mi .lab{font-size:.78em;font-weight:700;width:5.6em;text-align:right;color:var(--dash-good)}
+.d-mi .lab.off{color:var(--dash-muted)}
+.sw{width:2.6em;height:1.5em;border-radius:99px;background:var(--dash-good);position:relative;border:0;cursor:pointer;flex:none;padding:0}
+.sw::after{content:"";position:absolute;top:.2em;left:1.3em;width:1.1em;height:1.1em;border-radius:50%;background:var(--app-white);transition:left .2s}
+.sw.off{background:var(--dash-off)}
+.sw.off::after{left:.2em}
+.sw.tap-here{--pulse-c:rgba(46,125,91,.55)}
+.d-mini{display:flex;flex-wrap:wrap;gap:.4em}
+.d-mini span{font-size:.8em;font-weight:600;border:1px solid var(--dash-line);background:var(--dash-card);border-radius:99px;padding:.25em .65em;color:var(--dash-muted)}
+
+/* Money breakdown */
+.money{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:start}
+.money-bar{display:flex;gap:2px;height:30px;margin:16px 0 18px}
+.money-bar i{display:block;height:100%;min-width:3px;transition:flex-grow .4s ease}
+.money-bar i:first-child{border-radius:8px 0 0 8px}
+.money-bar i:last-child{border-radius:0 8px 8px 0}
+.mrows{display:flex;flex-direction:column}
+.mrow{display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:4px 12px;align-items:baseline;padding:11px 0;border-top:1px solid var(--line)}
+.mrow:first-child{border-top:0}
+.mrow .sw2{width:12px;height:12px;border-radius:3px;align-self:center}
+.mrow b{font-size:15px}
+.mrow .amt{font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+.mrow p{grid-column:2/4;font-size:13.5px;color:var(--muted)}
+.mrow.total{border-top:2px solid var(--ink)}
+.keep-callout{padding:22px;border-radius:16px;background:var(--keep-soft);display:grid;gap:8px}
+.keep-callout .k{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--keep)}
+.keep-callout .v{font-size:40px;font-weight:800;line-height:1;color:var(--keep);font-variant-numeric:tabular-nums}
+.keep-callout p{color:var(--ink-2)}
+.money-plan{margin-top:6px}
+
+/* Pricing */
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 28px;padding:18px 20px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.slider label{display:flex;justify-content:space-between;gap:10px;font-weight:600;margin-bottom:6px}
+.slider output{font-weight:800;font-variant-numeric:tabular-nums}
+input[type="range"]{width:100%;accent-color:var(--brand)}
+.calc-sum{grid-column:1/-1;color:var(--ink-2);font-size:15px;border-top:1px solid var(--line);padding-top:12px}
+.calc-sum b{color:var(--ink)}
+.presets{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+.chip{border:1px solid var(--line-strong);background:transparent;border-radius:99px;padding:4px 11px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink-2)}
+.chip:hover{border-color:var(--ink-2)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+.plan{display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:16px;background:var(--surface);border:1px solid var(--line);position:relative;cursor:pointer;text-align:left;width:100%}
+.plan:hover{border-color:var(--line-strong)}
+.plan[aria-pressed="true"]{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
+.plan-name{display:flex;align-items:center;gap:9px;font-weight:800;font-size:16px;padding-right:96px}
+.plan-name i{width:16px;height:4px;border-radius:2px;flex:none}
+.plan-price{font-size:14.5px;color:var(--ink-2)}
+.plan-price b{font-size:26px;color:var(--ink);font-weight:800;letter-spacing:-.02em}
+.plan-best{font-size:13.5px;color:var(--muted)}
+.plan-month{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:2px;margin-top:auto}
+.plan-month .k{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.plan-month .v{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.plan-month .s{font-size:12.5px;color:var(--muted)}
+.plan-month .allin{font-size:13.5px;color:var(--ink-2);font-weight:600;margin-top:4px}
+.badge{position:absolute;top:16px;right:16px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;background:var(--keep-soft);color:var(--keep)}
+.plan-sel{font-size:12px;font-weight:700;color:var(--brand-strong)}
+.plan-sel[hidden]{display:none}
+.chart-card{margin-top:16px;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:16px;display:grid;gap:10px}
+.breakeven{font-size:16px;font-weight:600;max-width:72ch}
+.breakeven span{display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-2)}
+.legend i{display:inline-block;width:16px;height:4px;border-radius:2px;vertical-align:middle;margin-right:7px}
+#chart{position:relative;touch-action:pan-y}
+#chart svg{width:100%;height:auto;display:block;overflow:visible}
+#chart .grid{stroke:var(--grid);stroke-width:1}
+#chart .axis{stroke:var(--axis);stroke-width:1}
+#chart .tick{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums;font-family:var(--font)}
+#chart .ax-t{fill:var(--muted);font-size:11px;font-family:var(--font)}
+#chart .ln{stroke-width:2.5;stroke-linecap:round;fill:none}
+#chart .dot{stroke:var(--surface);stroke-width:2}
+#chart .marker{stroke:var(--ink-2);stroke-dasharray:3 4;stroke-width:1.2}
+#chart .marker-t{fill:var(--ink-2);font-size:11px;font-weight:700;font-family:var(--font)}
+#chart .dl{fill:var(--ink);font-size:12px;font-weight:700;font-family:var(--font)}
+#chart .xh{stroke:var(--muted);stroke-width:1}
+.tip{position:absolute;top:0;left:0;pointer-events:none;background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:8px 10px;font-size:12.5px;box-shadow:var(--shadow);min-width:180px;z-index:3}
+.tip .h{font-weight:700;margin-bottom:4px}
+.tip .r{display:flex;align-items:center;gap:7px;justify-content:space-between}
+.tip .r span:first-child{display:flex;align-items:center;gap:7px;color:var(--ink-2)}
+.tip i{display:inline-block;width:12px;height:3px;border-radius:2px}
+.tip b{font-variant-numeric:tabular-nums}
+.tip .sub{margin-top:5px;padding-top:5px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px}
+.chart-note{font-size:12.5px;color:var(--muted)}
+.compare-note{font-size:13.5px;color:var(--ink-2);margin-top:12px;max-width:80ch}
+details.presenter{margin-top:20px;border:1px dashed var(--line-strong);border-radius:14px;padding:12px 16px}
+details.presenter summary{cursor:pointer;font-weight:700;color:var(--ink-2);font-size:14px}
+.pnote{font-size:13px;color:var(--muted);margin-top:8px}
+.ptable-wrap{overflow-x:auto;margin-top:12px}
+.ptable{border-collapse:collapse;min-width:460px;width:100%}
+.ptable th{font-size:12px;text-align:left;color:var(--muted);font-weight:700;padding:4px 8px 6px 0}
+.ptable td{padding:4px 8px 4px 0}
+.ptable td:first-child{font-weight:700;font-size:14px;white-space:nowrap}
+.ptable input{padding:7px 9px;font-size:14px}
+.p-actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+
+/* Hardware */
+.kits{display:flex;flex-wrap:wrap;gap:8px}
+.kit{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:9px 15px;font-weight:600;font-size:14px;cursor:pointer;color:var(--ink-2)}
+.kit[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.kit small{font-weight:500;opacity:.8}
+.hw-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px;margin-top:18px;align-items:start}
+.hw-list{display:flex;flex-direction:column;gap:10px}
+.hw{display:grid;grid-template-columns:auto 56px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);cursor:pointer}
+.hw:hover{border-color:var(--line-strong)}
+.hw input{width:18px;height:18px;accent-color:var(--brand);margin:0}
+.hw-ic{width:56px;height:56px;border-radius:12px;background:var(--sand);display:grid;place-items:center;color:var(--ink-2)}
+.hw-ic svg{width:34px;height:34px}
+.hw .role{display:block;font-size:11.5px;font-weight:700;color:var(--brand-strong);text-transform:uppercase;letter-spacing:.07em}
+.hw .nm{display:block;font-size:15.5px;font-weight:800;letter-spacing:-.01em}
+.hw .what{display:block;font-size:13.5px;color:var(--ink-2);margin-top:2px}
+.hw .note{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+.hw .price{font-weight:800;font-size:17px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hw .price small{display:block;font-size:11.5px;font-weight:600;color:var(--muted)}
+.hw.off{opacity:.6}
+.hw-total{position:sticky;top:16px;padding:20px;border-radius:16px;background:var(--ink);color:var(--bg);display:grid;gap:10px}
+.hw-total .k{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.hw-total .v{font-size:40px;font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.hw-total ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14px}
+.hw-total li{display:flex;justify-content:space-between;gap:10px;font-variant-numeric:tabular-nums}
+.hw-total hr{border:0;border-top:1px solid currentColor;opacity:.2;margin:4px 0;width:100%}
+.hw-total p{font-size:14px;opacity:.9}
+.hw-total label{display:flex;gap:9px;align-items:center;font-size:14px;cursor:pointer}
+.hw-total input{width:17px;height:17px;accent-color:var(--brand);margin:0}
+.hw-foot{font-size:12.5px;color:var(--muted);margin-top:14px;max-width:90ch}
+
+/* Why it helps */
+/* Two clocks side by side: the same bowl, ordered two ways. The left card is
+   deliberately plain and the right one carries the keep-green accent. */
+.why-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.why{padding:22px;border-radius:16px;background:var(--surface);border:1px solid var(--line);display:grid;gap:14px;align-content:start}
+.why.app{border-color:var(--keep);box-shadow:var(--shadow)}
+.why-tag{justify-self:start;display:inline-flex;align-items:center;gap:7px;margin:0;font-size:12.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:6px 12px;border-radius:99px;background:var(--sand);color:var(--muted)}
+.why.app .why-tag{background:var(--keep-soft);color:var(--keep)}
+.why-tag svg{width:15px;height:15px;flex:none}
+.tl{list-style:none;margin:0;padding:0;display:grid}
+.tl li{display:grid;grid-template-columns:50px minmax(0,1fr);gap:14px;padding:11px 0}
+.tl li + li{border-top:1px solid var(--line)}
+.tl .t{font-variant-numeric:tabular-nums;font-weight:800;font-size:14.5px;color:var(--muted);padding-top:1px}
+.why.app .tl .t{color:var(--keep)}
+.tl .e{font-size:15px;line-height:1.5;color:var(--ink-2)}
+.tl .e b{color:var(--ink)}
+.why-kicker{margin-top:2px;padding:12px 14px;border-radius:12px;background:var(--sand);font-size:14.5px;color:var(--ink-2)}
+.why.app .why-kicker{background:var(--keep-soft)}
+.why-kicker b{color:var(--ink)}
+.why.app .why-kicker b{color:var(--keep)}
+.why-foot{margin-top:16px;font-size:15.5px;color:var(--ink-2);text-align:center}
+.why-foot b{color:var(--ink)}
+
+/* Worked example: the take rate on a fixed $10,000 */
+.take{margin-top:18px;padding:20px;border-radius:16px;background:var(--surface);border:1px solid var(--line);display:grid;gap:14px}
+.take-head{display:grid;gap:6px;max-width:78ch}
+.take-head h3{font-size:21px}
+.take-head p{font-size:14.5px;color:var(--ink-2)}
+.take-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tk{padding:16px 18px;border-radius:14px;background:var(--sand);display:grid;gap:2px;align-content:start}
+.tk.best{background:var(--keep-soft)}
+.tk-nm{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;margin-bottom:6px}
+.tk-nm i{width:14px;height:4px;border-radius:2px;flex:none}
+.tk-k{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.tk-pct{font-size:40px;font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.tk-sub{font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tk-rows{margin-top:10px;display:grid;gap:4px;font-size:13.5px;border-top:1px solid var(--line-strong);padding-top:9px}
+.tk-rows div{display:flex;justify-content:space-between;gap:8px;font-variant-numeric:tabular-nums}
+.tk-rows div span:first-child{color:var(--muted)}
+.tk-rows div.tot{font-weight:800}
+.take-foot{font-size:13px;color:var(--muted);max-width:86ch}
+
+/* Getting started */
+.start{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;list-style:none;margin:0;padding:0}
+.start li{display:grid;gap:6px;align-content:start}
+.start .num{width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--on-brand);display:grid;place-items:center;font-weight:800;font-size:14px}
+.start h3{font-size:16.5px}
+.start p{font-size:14px;color:var(--ink-2)}
+.plain{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 28px;list-style:none;margin:36px 0 0;padding:24px 0 0;border-top:1px solid var(--line)}
+.plain li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;font-size:14.5px;color:var(--ink-2)}
+.plain svg{width:18px;height:18px;color:var(--keep);margin-top:2px}
+.plain b{color:var(--ink)}
+footer{border-top:1px solid var(--line)}
+footer .wrap{padding-block:24px 40px;font-size:12.5px;color:var(--muted);display:grid;gap:6px}
+
+@media (max-width:1040px){
+  .steps{display:none}
+  .lane-tabs{display:inline-flex}
+  .stage{grid-template-columns:minmax(0,1fr)}
+  .lane{display:none;opacity:1!important}
+  .lane.show{display:flex}
+  .caption{min-height:0}
+}
+@media (max-width:860px){
+  .parties{grid-template-columns:minmax(0,1fr);gap:20px}
+  .money,.hw-grid{grid-template-columns:minmax(0,1fr)}
+  .plans{grid-template-columns:minmax(0,1fr)}
+  .start{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .plain{grid-template-columns:minmax(0,1fr)}
+  .why-grid,.take-grid{grid-template-columns:minmax(0,1fr)}
+  .hw-total{position:static}
+}
+@media (max-width:560px){
+  .topnav{display:none}
+  .calc{grid-template-columns:minmax(0,1fr)}
+  .start{grid-template-columns:minmax(0,1fr)}
+  .hw{grid-template-columns:auto minmax(0,1fr) auto;gap:12px}
+  .hw-ic{display:none}
+  .kitchen-extra{gap:12px}
+  .printer{width:132px}
+  .keep-callout .v,.hw-total .v{font-size:34px}
+  .sec{padding-block:44px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+
+<header class="topbar">
+  <div class="wrap">
+    <div class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2 5 13.2h5.6L9.5 22 19 9.8h-5.7z"/></svg></span>FastOrdr</div>
+    <div class="top-right">
+      <nav class="topnav" aria-label="Sections">
+        <a href="#why" data-t>Why it helps</a><a href="#demo" data-t>How it works</a><a href="#money" data-t>Your money</a><a href="#pricing" data-t>Plans</a><a href="#hardware" data-t>Hardware</a><a href="#start" data-t>Getting started</a>
+      </nav>
+      <div class="seg lang" id="langSeg" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="ja" aria-pressed="false">日本語</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow" data-t>For store owners and managers</p>
+    <h1 data-t>Your own online ordering, from the customer's phone to your counter.</h1>
+    <p class="lede" data-t>Customers order ahead, pay in the app and see when their food will be ready, so they shop instead of queueing. Your kitchen gets each order on an iPad, labels and the receipt print by themselves, and your staff cook instead of taking orders. No commission on your own orders.</p>
+    <div class="setup">
+      <div>
+        <span class="field-label" id="typeLabel" data-t>Type of store</span>
+        <div class="seg" id="typeSeg" role="group" aria-labelledby="typeLabel"></div>
+      </div>
+      <div class="name-field">
+        <label class="field-label" for="storeName" data-t>Store name</label>
+        <input type="text" id="storeName" autocomplete="off" maxlength="40">
+      </div>
+      <p class="setup-note" data-t>Type the store you're talking to. The whole demo, the receipts and the price examples below update to match.</p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="parties">
+    <div class="party">
+      <span class="party-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span>
+      <h3 data-t>Your customers</h3>
+      <p data-t>Browse your menu, customize, pay, and pick it up or eat in. No waiting in line, no phone calls.</p>
+      <span class="uses" data-t>Uses: the FastOrdr app on their phone</span>
+    </div>
+    <div class="party">
+      <span class="party-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M11 17h2"/></svg></span>
+      <h3 data-t>Your kitchen</h3>
+      <p data-t>Orders arrive with a chime, one tap accepts them, and the ticket or label prints on its own.</p>
+      <span class="uses" data-t>Uses: one iPad and a printer</span>
+    </div>
+    <div class="party">
+      <span class="party-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="4.5" y="5" width="15" height="10.5" rx="1.5"/><path d="M2.5 19h19"/></svg></span>
+      <h3 data-t>You, the owner</h3>
+      <p data-t>Change prices, mark items sold out, set hours, and see every sale and payout.</p>
+      <span class="uses" data-t>Uses: the dashboard on any computer or phone</span>
+    </div>
+  </div>
+</div>
+
+<section id="why">
+  <div class="wrap sec" style="padding-top:8px">
+    <div class="sec-head">
+      <p class="eyebrow" data-t>Why it helps</p>
+      <h2 data-t>Food ordered two different ways: with the app, or standing in line</h2>
+      <p data-t>Same bowl, same twelve minutes of cooking. What changes is where your customer spends them — in your line, or still shopping — and whether one of your cooks is stuck at the register.</p>
+    </div>
+    <div class="why-grid">
+      <article class="why">
+        <h3 class="why-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg> <span data-t>Standing in line</span></h3>
+        <ol class="tl">
+          <li><span class="t">12:00</span><span class="e" data-t>She comes to the food court on her lunch break. <b>Six people ahead of her.</b></span></li>
+          <li><span class="t">12:03</span><span class="e" data-t>A potential customer sees the line and decides to try a different store.</span></li>
+          <li><span class="t">12:07</span><span class="e" data-t>She orders, pays, and <b>takes a table to wait</b>, not knowing if she has enough time to buy groceries.</span></li>
+          <li><span class="t">12:19</span><span class="e" data-t>Her ramen arrives. She needs to eat quickly so she still has time to get groceries before her next task.</span></li>
+        </ol>
+        <p class="why-kicker" data-t>Your quickest cook spent that rush <b>at the register</b>, and a table sat full of somebody who wasn't eating yet.</p>
+      </article>
+      <article class="why app">
+        <h3 class="why-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg> <span data-t>With the app</span></h3>
+        <ol class="tl">
+          <li><span class="t">11:58</span><span class="e" data-t>She orders from her phone in the produce aisle. Paid. <b>The app says pickup at 12:11.</b></span></li>
+          <li><span class="t">11:59</span><span class="e" data-t>It lands on the kitchen iPad. One tap, the label prints, it's cooking.</span></li>
+          <li><span class="t">12:08</span><span class="e" data-t>She finishes her shopping and goes through checkout.</span></li>
+          <li><span class="t">12:11</span><span class="e" data-t>She walks over, shows her code, and <b>sits down with her ramen and her groceries.</b></span></li>
+        </ol>
+        <p class="why-kicker" data-t>Same twelve minutes of cooking — she spent them <b>finishing her shopping</b>, fifty feet away. Nobody left the kitchen to take that order.</p>
+      </article>
+    </div>
+    <p class="why-foot" data-t>Same crew, same kitchen, same twelve minutes. <b>The register just isn't in the way any more.</b></p>
+  </div>
+</section>
+
+<section id="demo" class="band">
+  <div class="wrap">
+    <div class="demo-top">
+      <div class="sec-head" style="margin:0">
+        <p class="eyebrow" data-t>Live demo</p>
+        <h2 data-t>Follow one order from start to finish</h2>
+        <p data-t>Click the highlighted buttons inside the screens, use Next, or press Play and let it run.</p>
+      </div>
+    </div>
+    <ol class="steps" id="steps" aria-label="Demo steps"></ol>
+    <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+    <div class="caption" aria-live="polite">
+      <div class="cap-meta"><span class="who-chip" id="capWho"></span><span class="cap-count" id="capCount"></span></div>
+      <h3 id="capTitle"></h3>
+      <p id="capBody"></p>
+    </div>
+
+    <div class="seg lane-tabs" id="laneTabs" role="group" aria-label="Choose a screen">
+      <button type="button" data-lane="customer" data-t>Customer</button>
+      <button type="button" data-lane="kitchen" data-t>Kitchen</button>
+      <button type="button" data-lane="owner" data-t>Owner</button>
+    </div>
+
+    <div class="stage">
+      <div class="lane" data-lane="customer">
+        <div class="lane-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span data-t>Customer's phone</span></div>
+        <div class="phone"><div class="island"></div><div class="screen" id="phone"></div></div>
+      </div>
+      <div class="lane" data-lane="kitchen">
+        <div class="lane-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M11 17h2"/></svg><span data-t>Kitchen iPad and printer</span></div>
+        <div class="ipad"><div class="screen" id="kds"></div></div>
+        <div class="kitchen-extra">
+          <div class="printer" aria-hidden="true"><div class="pr-body"><span class="pr-led"></span></div><div class="paper" id="paper"></div></div>
+          <div class="printer-copy">
+            <b data-t>Prints by itself</b>
+            <p data-t>Accepting an order prints a label for every individual item, plus the one customer receipt for the bag.</p>
+            <span data-t>Brother QL-810W for item labels <b>and</b> Star TSP143IIIBI for receipts — they do different jobs, so you want both.</span>
+          </div>
+        </div>
+      </div>
+      <div class="lane" data-lane="owner">
+        <div class="lane-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4.5" y="5" width="15" height="10.5" rx="1.5"/><path d="M2.5 19h19"/></svg><span data-t>Owner dashboard</span></div>
+        <div class="browser"><div class="chrome"><i></i><i></i><i></i></div><div class="dash" id="dash"></div></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button type="button" class="btn" id="prevBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span data-t>Back</span></button>
+      <button type="button" class="btn primary" id="playBtn"></button>
+      <button type="button" class="btn" id="nextBtn"><span data-t>Next</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      <button type="button" class="btn quiet" id="restartBtn" data-t>Start over</button>
+      <span class="kbd-hint" data-t>The left and right arrow keys also move between steps.</span>
+    </div>
+  </div>
+</section>
+
+<section id="money">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <p class="eyebrow" data-t>Your money</p>
+      <h2 id="moneyTitle">Where the money from one order goes</h2>
+      <p id="moneyLede"></p>
+    </div>
+    <div class="money">
+      <div>
+        <div class="money-plan">
+          <span class="field-label" id="mpLabel" data-t>Show it on the plan</span>
+          <div class="seg" id="moneyPlanSeg" role="group" aria-labelledby="mpLabel"></div>
+        </div>
+        <div class="money-bar" id="moneyBar" aria-hidden="true"></div>
+        <div class="mrows" id="moneyRows"></div>
+      </div>
+      <div class="keep-callout" id="keepCallout"></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="band">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <p class="eyebrow" data-t>Plans</p>
+      <h2 data-t>Pay per order, pay per month, or a mix</h2>
+      <p data-t>Every plan includes your store in the FastOrdr app, the kitchen iPad app, the owner dashboard and support. The only difference is how you pay for it. Enter your numbers to see which costs least.</p>
+    </div>
+
+    <div class="calc">
+      <div class="slider">
+        <label for="perDay"><span data-t>Online orders a day</span> <output id="perDayOut" for="perDay"></output></label>
+        <input type="range" id="perDay" min="1" max="200" step="1">
+      </div>
+      <div class="slider">
+        <label for="ticket"><span data-t>Average order</span> <output id="ticketOut" for="ticket"></output></label>
+        <input type="range" id="ticket" min="5" max="80" step="0.5">
+      </div>
+      <div class="presets" id="presets"></div>
+      <p class="calc-sum" id="calcSum"></p>
+    </div>
+
+    <div class="plans" id="plans"></div>
+
+    <div class="take" id="take"></div>
+
+    <div class="chart-card">
+      <p class="breakeven" id="breakeven"></p>
+      <div class="legend" id="legend"></div>
+      <div id="chart"></div>
+      <p class="chart-note" data-t>What each plan costs you in total every month as online sales grow — our fee <b>and</b> Stripe's card processing together, because both come out of the same money. The horizontal axis is food and drink; both percentages are worked out on that plus tax and tip. Hover or drag across the chart to read any point, including how much of it is card processing.</p>
+    </div>
+
+    <p class="compare-note" data-t>FastOrdr is for pickup and dine-in, and the customer relationship stays with your store. Many stores keep a delivery app for delivery and send everyone who comes in to their own ordering.</p>
+
+    <details class="presenter" id="presenter">
+      <summary data-t>Adjust plan numbers</summary>
+      <p class="pnote" data-t>For trying out prices before or during a meeting. Changes are saved in this browser only.</p>
+      <div class="ptable-wrap">
+        <table class="ptable">
+          <thead><tr><th scope="col" data-t>Plan</th><th scope="col" data-t>Name</th><th scope="col" data-t>Monthly ($)</th><th scope="col" data-t>Per order (%)</th><th scope="col" data-t>Per order (¢)</th></tr></thead>
+          <tbody id="ptableBody"></tbody>
+        </table>
+      </div>
+      <div class="ptable-wrap">
+        <table class="ptable">
+          <thead><tr><th scope="col" data-t>Card processing</th><th scope="col" data-t>Rate (%)</th><th scope="col" data-t>Per order (¢)</th><th scope="col"></th><th scope="col"></th></tr></thead>
+          <tbody><tr><td>Stripe</td><td><input type="number" id="cardPct" step="0.1" min="0"></td><td><input type="number" id="cardFixed" step="1" min="0"></td><td></td><td></td></tr></tbody>
+        </table>
+      </div>
+      <div class="p-actions"><button type="button" class="btn" id="resetPlans" data-t>Reset to the suggested plans</button></div>
+    </details>
+  </div>
+</section>
+
+<section id="hardware">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <p class="eyebrow" data-t>Hardware</p>
+      <h2 data-t>About $520, one time</h2>
+      <p data-t>You buy the hardware and own it — no rental, no lease. A compatible used iPad with a stand comes to about $150, and both printers are worth having: the Brother labels each individual item, the Star prints the customer receipt. <b>We can supply the whole kit at these prices</b>, tested and paired before it reaches you, so there is nothing for you to shop for.</p>
+    </div>
+    <div class="kits" id="kits" role="group" aria-label="Hardware kits"></div>
+    <div class="hw-grid">
+      <div class="hw-list" id="hwList"></div>
+      <aside class="hw-total" id="hwTotal" aria-live="polite"></aside>
+    </div>
+    <p class="hw-foot" data-t>Approximate US prices, October 2026: used iPad 9th or 10th generation $110–140 plus a stand or wall mount about $30, so roughly $150 for the screen; Brother QL-810W about $170 (Brother, Staples); Star TSP143IIIBI about $200 used. A new iPad is $349 and a new Star is $330–380 if you would rather not buy used. Supplies are bought as you go. If you already have an iPad, tick the box and the kit drops to about $400. We sell the kit at these prices and do not mark it up.</p>
+  </div>
+</section>
+
+<section id="start" class="band">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <p class="eyebrow" data-t>Getting started</p>
+      <h2 data-t>Live in an afternoon</h2>
+      <p data-t>About twenty-five minutes of your time. We do the menu setup, and a person checks it before anything goes live.</p>
+    </div>
+    <ol class="start">
+      <li><span class="num">1</span><h3 data-t>Send your menu</h3><p data-t>A link to your current online menu, a PDF, or phone photos of the printed one.</p></li>
+      <li><span class="num">2</span><h3 data-t>Check the draft</h3><p data-t>We turn it into your app menu with sizes and add-ons. You fix any price and approve it.</p></li>
+      <li><span class="num">3</span><h3 data-t>Connect your bank</h3><p data-t>A five-minute Stripe form, so customer payments go straight to your account.</p></li>
+      <li><span class="num">4</span><h3 data-t>Pair the iPad</h3><p data-t>Enter a six-digit code, place a test order, and you're taking orders.</p></li>
+    </ol>
+    <ul class="plain" id="plain"></ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p data-t>Hokkaido Ramen Santouka's menu and prices are the real ones carried in FastOrdr for its San Jose store; the customer, the order and the sample stores are examples. Sales tax is 10.000%, the San Jose rate since 1 April 2026 — the 7.25% California base plus Santa Clara County district taxes, which rose 0.625% under Measure A. Confirm the rate for a specific address with the CDTFA lookup before go-live. The tip is shown at 15%. The FastOrdr fee and Stripe's fee are both charged on the full amount charged to the card, tax and tip included.</p>
+    <p data-t>Card processing is Stripe's standard US online rate, paid by the store directly to Stripe on every plan.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const saved = {
+  get(k, d) { try { const v = localStorage.getItem('fo-demo:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('fo-demo:' + k, JSON.stringify(v)); } catch (e) {} },
+};
+/* ---------- Language ----------
+   Translation is keyed by the English itself, so no key has to be invented or
+   kept in sync and a missing entry falls through to English instead of
+   blanking the page. Static copy carries a bare `data-t` and is swapped whole
+   by innerHTML; everything the render functions build goes through the `L`
+   tagged template, which folds its static parts into a key like
+   "Ready in {0} min" and re-interpolates the values after lookup. */
+let LANG = saved.get('lang', 'en') === 'ja' ? 'ja' : 'en';
+const norm = x => String(x).trim().replace(/\s+/g, ' ');
+function L(strings, ...vals) {
+  const en = () => strings.reduce((a, x, i) => a + x + (i < vals.length ? vals[i] : ''), '');
+  if (LANG === 'en') return en();
+  const tpl = JA[norm(strings.reduce((a, x, i) => a + x + (i < vals.length ? '{' + i + '}' : ''), ''))];
+  return tpl == null ? en() : tpl.replace(/\{(\d+)\}/g, (_, i) => vals[+i]);
+}
+/* Plain data strings -- menu items, plan names, hardware -- rather than
+   sentences, so they are looked up whole. */
+const tx = x => (LANG === 'ja' && JA[norm(x)]) || x;
+function applyStatic() {
+  document.documentElement.lang = LANG;
+  $$('[data-t]').forEach(el => {
+    /* Cache the English on first pass so switching back is lossless. */
+    if (el.dataset.en === undefined) el.dataset.en = el.innerHTML;
+    const ja = JA[norm(el.dataset.en)];
+    el.innerHTML = LANG === 'ja' && ja ? ja : el.dataset.en;
+  });
+}
+function setLang(l) {
+  LANG = l === 'ja' ? 'ja' : 'en';
+  saved.set('lang', LANG);
+  $$('#langSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+  applyStatic(); renderAll(); renderPlain();
+}
+
+const money = (c, whole) => (c / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: whole ? 0 : 2, maximumFractionDigits: whole ? 0 : 2 });
+const whole = c => money(Math.round(c / 100) * 100, true);
+
+const TIP = 0.15, CODE = '4F2A', CUSTOMER = 'Sam';
+/* Sales tax is per store. San Jose is 10.000% as of 1 April 2026: the 7.25%
+   state base plus Santa Clara County district taxes, which rose 0.625% when
+   Measure A took effect. The old 9.375% figure predates that. */
+const taxRate = () => T().tax;
+/* The FastOrdr fee and Stripe's fee are both charged on the FULL amount the
+   card is charged — food, tax and tip. This factor turns a food-and-drink
+   figure into that charged amount. */
+const grossUp = () => 1 + taxRate() + TIP;
+
+/* Food glyphs: 48x48, currentColor body, var(--tbg) for cut-outs. */
+const G = {
+  cup: '<rect x="11" y="10" width="26" height="5" rx="2.5"/><path d="M13 16h22l-2.6 24.2A3 3 0 0 1 29.4 43H18.6a3 3 0 0 1-3-2.8z" opacity=".9"/><path d="M26.5 3h4l-2.4 8h-3.4z" opacity=".75"/><path d="M14.4 24h19.2" stroke="var(--tbg)" stroke-width="2"/>',
+  bowl: '<path d="M6 24h36a18 15 0 0 1-36 0z"/><path d="M18 6c-3 3 3 5 0 9M25 4c-3 3 3 5 0 9M32 6c-3 3 3 5 0 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" opacity=".55"/><rect x="17" y="37" width="14" height="4" rx="2" opacity=".8"/>',
+  slice: '<path d="M24 5 42 37c-11 5-25 5-36 0z"/><path d="M6 37c11 5 25 5 36 0l1.6 3.4c-12 6-27.2 6-39.2 0z" opacity=".7"/><circle cx="22" cy="22" r="2.6" fill="var(--tbg)"/><circle cx="28" cy="30" r="2.6" fill="var(--tbg)"/><circle cx="18" cy="32" r="2.2" fill="var(--tbg)"/>',
+  muffin: '<path d="M11 25a13 11.5 0 0 1 26 0z"/><path d="M12.5 27h23l-3.6 14H16.1z" opacity=".72"/><path d="M19 28l1 12M24 28v12M29 28l-1 12" stroke="var(--tbg)" stroke-width="1.6"/><circle cx="19" cy="19" r="1.9" fill="var(--tbg)"/><circle cx="26" cy="17" r="1.9" fill="var(--tbg)"/><circle cx="29.5" cy="22" r="1.7" fill="var(--tbg)"/>',
+  wrap: '<g transform="rotate(-24 24 24)"><rect x="6" y="15" width="36" height="18" rx="9"/><path d="M16 15v18M24 15v18M32 15v18" stroke="var(--tbg)" stroke-width="1.8" opacity=".9"/></g>',
+  box: '<circle cx="17" cy="16" r="4.6" opacity=".7"/><circle cx="24" cy="13" r="5" opacity=".7"/><circle cx="31" cy="16" r="4.6" opacity=".7"/><path d="M11 18h26l-3.2 24H14.2z"/><path d="M19.5 18.5l1 23M28.5 18.5l-1 23" stroke="var(--tbg)" stroke-width="2"/>',
+  dumpling: '<path d="M5 32a19 16 0 0 1 38 0c0 3-5 5.5-19 5.5S5 35 5 32z"/><path d="M15 22v5M20.5 18.5v6M27.5 18.5v6M33 22v5" stroke="var(--tbg)" stroke-width="2.2" stroke-linecap="round"/>',
+  plate: '<ellipse cx="24" cy="30" rx="20" ry="9.5" opacity=".42"/><path d="M11 30c6-7 15-9 26-6.5M13 34.5c7-5.5 16-6.5 24-4.2M15 26c5-5.5 12.5-7.5 19-6.4" stroke="currentColor" stroke-width="3.2" fill="none" stroke-linecap="round"/>',
+  knots: '<circle cx="16.5" cy="20" r="7.5"/><circle cx="31.5" cy="20" r="7.5"/><circle cx="24" cy="32" r="7.5"/><circle cx="16.5" cy="20" r="2.3" fill="var(--tbg)"/><circle cx="31.5" cy="20" r="2.3" fill="var(--tbg)"/><circle cx="24" cy="32" r="2.3" fill="var(--tbg)"/>',
+  salad: '<path d="M6 26h36a18 14 0 0 1-36 0z"/><path d="M12 25.5c2-8.5 8.5-10.5 13-8.5-2 4.5-6.5 7.5-13 8.5zM22 25.5c3.5-9.5 11-11.5 16-8.5-3 5.5-8.5 7.5-16 8.5z" opacity=".55"/>',
+};
+const glyph = (name, tint, size) => `<svg viewBox="0 0 48 48" fill="currentColor" aria-hidden="true" style="color:var(--g${tint})${size ? `;width:${size}px;height:${size}px` : ''}">${G[name]}</svg>`;
+const thumb = it => `<span class="thumb" style="--tbg:var(--t${it.tint});background:var(--t${it.tint})">${glyph(it.glyph, it.tint)}</span>`;
+
+/* Sample stores. Prices in cents; option deltas are additive. */
+const TYPES = {
+  /* 7 online orders a day x $40 is ~$10,450 charged a month, so the sliders
+     open within a few hundred dollars of the fixed $10,000 worked example
+     below and the two agree. A store just starting online ordering is there. */
+  santouka: { label: 'Ramen (real menu)', name: 'Hokkaido Ramen Santouka', perDay: 7, ticket: 40, prep: 12, tax: 0.10,
+    featured: 'spicymiso', side: 'charsiubowl', third: 'greentea', soldTarget: 'egg',
+    items: [
+      { id: 'spicymiso', name: 'Spicy Miso Ramen', desc: 'Roasted pork, scallions, bamboo, mushrooms, sesame', price: 2050, glyph: 'bowl', tint: 3,
+        groups: [
+          /* The real menu has exactly one group: optional, purely additive
+             add-ons. There is no size or style group — Santouka sells each
+             pork style as its own bowl, so style lives in item identity. */
+          { name: 'Add-ons', multi: true, choices: [['Flavored Egg', 400], ['Extra Toroniku', 1050], ['Bara Toro Charsiu', 1000], ['Cloud Ear Mushroom', 250]], def: [0] },
+        ] },
+      { id: 'shio', name: 'Shio Ramen', desc: 'Salt-based tonkotsu broth with pickled plum', price: 2000, glyph: 'bowl', tint: 1 },
+      { id: 'charsiubowl', name: 'Char Siu Rice Bowl', desc: 'Pork.', price: 1100, glyph: 'plate', tint: 2 },
+      { id: 'greentea', name: 'Green Tea', desc: 'Hot or iced', price: 400, glyph: 'cup', tint: 6 },
+      { id: 'egg', name: 'Flavored Egg', desc: 'Marinated with soy sauce flavor.', price: 400, glyph: 'knots', tint: 4 },
+    ] },
+  cafe: { label: 'Café', name: 'Corner Café', perDay: 25, ticket: 12, prep: 8, tax: 0.10,
+    featured: 'latte', side: 'muffin', third: 'burrito', soldTarget: 'coldbrew',
+    items: [
+      { id: 'latte', name: 'Latte', desc: 'Double shot, steamed milk', price: 525, glyph: 'cup', tint: 1,
+        groups: [
+          { name: 'Size', choices: [['12 oz', 0], ['16 oz', 75]], def: 1 },
+          { name: 'Milk', choices: [['Whole milk', 0], ['Oat milk', 75], ['Almond milk', 75]], def: 1 },
+          { name: 'Add-ons', multi: true, choices: [['Extra shot', 100], ['Vanilla syrup', 75]], def: [0] },
+        ] },
+      { id: 'coldbrew', name: 'Cold Brew', desc: 'Steeped for 18 hours', price: 495, glyph: 'cup', tint: 6 },
+      { id: 'burrito', name: 'Breakfast Burrito', desc: 'Egg, potatoes, cheddar, salsa roja', price: 950, glyph: 'wrap', tint: 2 },
+      { id: 'muffin', name: 'Blueberry Muffin', desc: 'Baked this morning', price: 375, glyph: 'muffin', tint: 5 },
+    ] },
+  boba: { label: 'Boba & tea', name: 'Pearl Tea House', perDay: 35, ticket: 11, prep: 6, tax: 0.10,
+    featured: 'milktea', side: 'popcorn', third: 'mango', soldTarget: 'jasmine',
+    items: [
+      { id: 'milktea', name: 'Brown Sugar Milk Tea', desc: 'Fresh milk, brown sugar syrup', price: 595, glyph: 'cup', tint: 1,
+        groups: [
+          { name: 'Size', choices: [['Regular', 0], ['Large', 100]], def: 1 },
+          { name: 'Sweetness', choices: [['100%', 0], ['75%', 0], ['50%', 0], ['25%', 0]], def: 2, suffix: ' sweet' },
+          { name: 'Toppings', multi: true, choices: [['Boba pearls', 0], ['Pudding', 75], ['Cheese foam', 125]], def: [0, 1] },
+        ] },
+      { id: 'jasmine', name: 'Jasmine Green Tea', desc: 'Lightly floral, served iced', price: 475, glyph: 'cup', tint: 4 },
+      { id: 'mango', name: 'Mango Slush', desc: 'Real mango, blended with ice', price: 625, glyph: 'cup', tint: 2 },
+      { id: 'popcorn', name: 'Popcorn Chicken', desc: 'Basil, salt and pepper', price: 695, glyph: 'box', tint: 3 },
+    ] },
+  restaurant: { label: 'Restaurant', name: 'Main Street Kitchen', perDay: 18, ticket: 28, prep: 12, tax: 0.10,
+    featured: 'bowl', side: 'dumplings', third: 'beans', soldTarget: 'noodle',
+    items: [
+      { id: 'bowl', name: 'Spicy Chicken Rice Bowl', desc: 'Grilled chicken, pickled veg, chili crisp', price: 1350, glyph: 'bowl', tint: 3,
+        groups: [
+          { name: 'Size', choices: [['Regular', 0], ['Large', 200]], def: 1 },
+          { name: 'Spice', choices: [['Mild', 0], ['Medium', 0], ['Hot', 0]], def: 1 },
+          { name: 'Add-ons', multi: true, choices: [['Soft egg', 150], ['Extra chicken', 300], ['Avocado', 200]], def: [0] },
+        ] },
+      { id: 'noodle', name: 'Beef Noodle Soup', desc: 'Braised beef, bok choy, hand-pulled noodles', price: 1595, glyph: 'bowl', tint: 1 },
+      { id: 'dumplings', name: 'Pork Dumplings (6)', desc: 'Pan-fried, with black vinegar', price: 750, glyph: 'dumpling', tint: 2 },
+      { id: 'beans', name: 'Garlic Green Beans', desc: 'Wok-fried with garlic', price: 850, glyph: 'plate', tint: 4 },
+    ] },
+  pizza: { label: 'Pizza', name: 'Slice Shop', perDay: 15, ticket: 32, prep: 15, tax: 0.10,
+    featured: 'marg', side: 'knots', third: 'calzone', soldTarget: 'caesar',
+    items: [
+      { id: 'marg', name: 'Margherita Pizza', desc: 'Tomato, mozzarella, basil', price: 1400, glyph: 'slice', tint: 3,
+        groups: [
+          { name: 'Size', choices: [['12"', 0], ['16"', 500]], def: 1 },
+          { name: 'Crust', choices: [['Classic crust', 0], ['Thin crust', 0]], def: 1 },
+          { name: 'Toppings', multi: true, choices: [['Pepperoni', 250], ['Mushrooms', 200], ['Extra cheese', 200]], def: [0] },
+        ] },
+      { id: 'caesar', name: 'Caesar Salad', desc: 'Romaine, parmesan, croutons', price: 950, glyph: 'salad', tint: 4 },
+      { id: 'calzone', name: 'Ham & Ricotta Calzone', desc: 'Mozzarella, ricotta, ham', price: 1350, glyph: 'dumpling', tint: 2 },
+      { id: 'knots', name: 'Garlic Knots (6)', desc: 'With marinara', price: 595, glyph: 'knots', tint: 1 },
+    ] },
+};
+const TYPE_ORDER = ['santouka', 'cafe', 'boba', 'restaurant', 'pizza'];
+
+const DEFAULT_PLANS = [
+  { id: 'payg', name: 'Pay as you go', monthly: 0, pct: 2.9, perOrder: 0, best: 'Just starting with online orders, or a handful a day.' },
+  { id: 'plus', name: 'Plus', monthly: 49, pct: 1.0, perOrder: 0, best: 'A steady stream of online orders every day.' },
+  { id: 'unl', name: 'Unlimited', monthly: 199, pct: 0, perOrder: 0, best: 'Busy stores that want one fixed bill.' },
+];
+const DEFAULT_CARD = { pct: 2.9, fixed: 30 };
+
+/* The two printers are not alternatives — they do different jobs, so a normal
+   store buys both. The Brother puts a label on every individual item; the Star
+   prints the one customer receipt for the bag. */
+const HW = [
+  { id: 'ipad', name: 'iPad and stand', role: 'Kitchen screen', what: 'Shows incoming orders and moves them through the queue, upright on the counter or mounted on the wall by the pass. A used iPad 9th generation or newer is all it needs.', price: 150, havePrice: 30, note: 'About $120 used plus a $30 stand. New iPad from $349.', icon: 'tablet' },
+  { id: 'label', name: 'Brother QL-810W', role: 'Item labels', what: 'Prints one sticker per item, with the order number, the name and every option, so each bowl and each drink is labelled and nothing gets mixed up. Wi-Fi.', price: 170, note: 'Labels about $20 a roll', icon: 'label' },
+  { id: 'ticket', name: 'Star TSP143IIIBI', role: 'Customer receipt', what: 'Prints the one paper receipt for the whole order, for the bag and for the counter. Bluetooth, with an auto-cutter.', price: 200, note: 'Used market price. Paper about $35 for 50 rolls', icon: 'receipt' },
+];
+const HW_ICONS = {
+  tablet: '<rect x="5" y="7" width="30" height="26" rx="3.5"/><path d="M18 29h4"/>',
+  label: '<rect x="6" y="14" width="28" height="15" rx="3"/><path d="M11 14V9h18v5M13 29v4h14v-4"/><path d="M12 20h6"/>',
+  receipt: '<path d="M9 18h22a3 3 0 0 1 3 3v8H6v-8a3 3 0 0 1 3-3z"/><path d="M12 18V6h16v12M12 29v6h16v-6M16 10h8M16 13.5h6"/>',
+};
+const KITS = [
+  { id: 'full', name: 'Complete kit · recommended', items: ['ipad', 'label', 'ticket'] },
+  { id: 'labels', name: 'Labels only', items: ['ipad', 'label'] },
+  { id: 'receipts', name: 'Receipts only', items: ['ipad', 'ticket'] },
+];
+
+const ICON = {
+  customer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>',
+  kitchen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M11 17h2"/></svg>',
+  owner: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4.5" y="5" width="15" height="10.5" rx="1.5"/><path d="M2.5 19h19"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+};
+const WHO = { customer: 'Customer', kitchen: 'Kitchen', owner: 'Owner' };
+
+const STEPS = [
+  { who: 'customer', short: 'Finds your store', title: 'Sam finds your store',
+    body: s => L`Sam opens the FastOrdr app and picks ${s.store}. They see your menu, your prices, and how long pickup takes right now. Tap the ${s.featured} to open it.` },
+  { who: 'customer', short: 'Picks options', title: 'Picks options, like at your counter',
+    body: () => L`The options and add-ons come straight from your menu, and the price updates with every tap. Santouka sells each pork style as its own bowl, so the only group here is add-ons. Try one, then add it to the bag.` },
+  { who: 'customer', short: 'Pays', title: 'Pays in the app',
+    body: s => L`Sam chooses pickup or dine-in, adds a tip and pays ${s.total} with Apple Pay or a card. Before paying they see pickup at ${s.ready}, so they can head off and run errands instead of waiting at your counter.` },
+  { who: 'kitchen', short: 'Kitchen gets it', title: 'Your kitchen gets it',
+    body: () => L`The iPad chimes and shows the full order, already paid. One tap on Accept tells Sam when it will be ready. Nobody answers a phone or retypes anything.` },
+  { who: 'kitchen', short: 'Ticket prints', title: 'The ticket prints and you cook',
+    body: s => L`A label prints for every item and the receipt prints for the bag. The order waits under Preparing with a ${s.prep}-minute timer, and Sam's app counts down to ${s.ready} — so Sam can be two shops away and nobody rings to ask. Skip ahead when you're ready.` },
+  { who: 'customer', short: 'Ready for pickup', title: 'Ready for pickup',
+    body: () => L`When the timer is up, Sam's app says the order is ready and shows the pickup code. Staff check the code, hand over the bag and tap Done.` },
+  { who: 'owner', short: 'Sale recorded', title: 'The sale shows up in your dashboard',
+    body: () => L`Each order shows what the customer paid, every fee, and what you get. Stripe pays the money straight into your bank account.` },
+  { who: 'owner', short: 'You control the menu', title: 'You stay in control of the menu',
+    body: s => L`Ran out of ${s.soldName}? Flip the switch in the dashboard and it shows as sold out in the app right away. Prices, hours and add-ons work the same way.` },
+];
+
+/* ---------- State ---------- */
+const validPlans = p => Array.isArray(p) && p.length === 3 && p.every(x => x && typeof x.name === 'string' && [x.monthly, x.pct, x.perOrder].every(n => typeof n === 'number' && isFinite(n) && n >= 0));
+const clone = o => JSON.parse(JSON.stringify(o));
+const storedType = saved.get('type', 'santouka');
+const storedPlans = saved.get('plans2', null);
+const storedCard = saved.get('card', null);
+const state = {
+  type: TYPES[storedType] ? storedType : 'santouka',
+  names: saved.get('names', {}) || {},
+  step: 0, playing: false, laneOverride: null, soldOut: false, sel: [],
+  plan: saved.get('plan', 'payg'),
+  perDay: 0, ticket: 0,
+  plans: validPlans(storedPlans) ? storedPlans : clone(DEFAULT_PLANS),
+  card: storedCard && isFinite(storedCard.pct) && isFinite(storedCard.fixed) ? storedCard : { ...DEFAULT_CARD },
+  hw: saved.get('hw3', null) || { ipad: true, label: true, ticket: true },
+  haveIpad: !!saved.get('haveIpad', false),
+};
+if (!state.plans.some(p => p.id === state.plan)) state.plan = state.plans[0].id;
+
+const T = () => TYPES[state.type];
+const item = id => T().items.find(i => i.id === id);
+const storeName = () => (state.names[state.type] || '').trim() || T().name;
+
+function resetType() {
+  const t = T();
+  state.sel = item(t.featured).groups.map(g => g.multi ? [...g.def] : g.def);
+  state.perDay = t.perDay; state.ticket = t.ticket; state.soldOut = false;
+}
+
+function choiceLabel(g, ci) { return tx(g.choices[ci][0]) + tx(g.suffix || ''); }
+function itemPrice(it, sel) {
+  let p = it.price;
+  (it.groups || []).forEach((g, gi) => {
+    if (g.multi) sel[gi].forEach(ci => { p += g.choices[ci][1]; });
+    else p += g.choices[sel[gi]][1];
+  });
+  return p;
+}
+function optParts(it, sel) {
+  const parts = [];
+  (it.groups || []).forEach((g, gi) => {
+    if (g.multi) sel[gi].forEach(ci => parts.push('+ ' + choiceLabel(g, ci)));
+    else parts.push(choiceLabel(g, sel[gi]));
+  });
+  return parts;
+}
+function theOrder() {
+  const t = T(), f = item(t.featured), side = item(t.side), third = item(t.third);
+  const fp = itemPrice(f, state.sel);
+  const sub = fp + side.price + third.price;
+  const tax = Math.round(sub * taxRate()), tip = Math.round(sub * TIP);
+  /* lines[] drives every screen that lists the order, so the phone, the
+     iPad, the printed ticket and the dashboard can never disagree. */
+  const lines = [
+    { name: tx(f.name), price: fp, opts: optParts(f, state.sel) },
+    { name: tx(side.name), price: side.price, opts: [] },
+    { name: tx(third.name), price: third.price, opts: [] },
+  ];
+  return { f, fp, side, third, lines, sub, tax, tip, total: sub + tax + tip, opts: optParts(f, state.sel) };
+}
+const planById = id => state.plans.find(p => p.id === id) || state.plans[0];
+const cardFeeOrder = totalC => Math.round(totalC * state.card.pct / 100 + state.card.fixed);
+/* Charged on the order TOTAL — food + tax + tip — exactly like Stripe's. */
+const planFeeOrder = (p, totalC) => Math.round(totalC * p.pct / 100 + p.perOrder);
+const monthlyOrders = () => Math.round(state.perDay * 30);
+/* Food and drink only: what an owner means by "sales". */
+const monthlySales = () => Math.round(monthlyOrders() * state.ticket * 100);
+/* What the cards are actually charged, which is what both fees run on. */
+const monthlyGross = () => Math.round(monthlySales() * grossUp());
+const planMonth = p => Math.round(p.monthly * 100 + monthlyGross() * p.pct / 100 + monthlyOrders() * p.perOrder);
+const cardMonth = () => Math.round(monthlyGross() * state.card.pct / 100 + monthlyOrders() * state.card.fixed);
+
+const pctTxt = n => (+(n * 100).toFixed(3)).toString();
+function priceLine(p) {
+  const per = [];
+  if (p.pct > 0) per.push(L`${+p.pct.toFixed(2)}% of each order's total`);
+  if (p.perOrder > 0) per.push(L`${+p.perOrder.toFixed(1)}¢ per order`);
+  return L`<b>$${+p.monthly.toFixed(2)}</b> a month` + (per.length ? ` + ${per.join(' + ')}` : L`, no per-order fee`);
+}
+
+/* ---------- Setup ---------- */
+function renderSetup() {
+  $('#typeSeg').innerHTML = TYPE_ORDER.map(id => `<button type="button" data-type="${id}" aria-pressed="${id === state.type}">${esc(tx(TYPES[id].label))}</button>`).join('');
+  const input = $('#storeName');
+  if (document.activeElement !== input) input.value = state.names[state.type] || '';
+  input.placeholder = T().name;
+}
+
+/* ---------- Demo: steps + caption ---------- */
+function renderSteps() {
+  $('#steps').innerHTML = STEPS.map((s, i) => `<li><button type="button" class="step-btn ${i < state.step ? 'done' : ''}" data-step="${i}" ${i === state.step ? 'aria-current="step"' : ''}><span class="n">${i < state.step ? ICON.check : ''}${i + 1} · ${tx(WHO[s.who])}</span><span class="t">${esc(tx(s.short))}</span></button></li>`).join('');
+  $('#progressBar').style.width = ((state.step + 1) / STEPS.length * 100) + '%';
+  const s = STEPS[state.step], o = theOrder(), t = T();
+  $('#capWho').innerHTML = ICON[s.who] + tx(WHO[s.who]);
+  $('#capCount').textContent = L`Step ${state.step + 1} of ${STEPS.length}`;
+  $('#capTitle').textContent = tx(s.title);
+  $('#capBody').textContent = s.body({ store: storeName(), featured: tx(o.f.name).toLowerCase(), total: money(o.total), prep: t.prep, ready: readyTime(t.prep), soldName: tx(item(t.soldTarget).name).toLowerCase() });
+  $('#prevBtn').disabled = state.step === 0;
+  $('#nextBtn').disabled = state.step === STEPS.length - 1;
+  $('#playBtn').innerHTML = state.playing
+    ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>' + L`Pause`
+    : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L8.5 4.64A1 1 0 0 0 7 5.5z"/></svg>' + (state.step === STEPS.length - 1 ? L`Play again` : L`Play`);
+}
+
+function renderLanes() {
+  const lane = state.laneOverride || STEPS[state.step].who;
+  $$('.lane').forEach(l => {
+    l.classList.toggle('active', l.dataset.lane === STEPS[state.step].who);
+    l.classList.toggle('show', l.dataset.lane === lane);
+  });
+  $$('#laneTabs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lane === lane));
+}
+
+/* ---------- Phone ---------- */
+const sbar = '<div class="sbar"><span>12:30</span><span class="sb-r"><i class="sig"></i><i class="bat"></i></span></div>';
+const TABS = [
+  ['Home', '<path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/>'],
+  ['Menu', '<path d="M5 7h14M5 12h14M5 17h9"/>'],
+  ['Orders', '<path d="M7 3.5h10v17l-2.5-1.6L12 20.5l-2.5-1.6L7 20.5zM9.5 8h5M9.5 11.5h5"/>'],
+  ['Bag', '<path d="M5.5 8.5h13l-1 11h-11zM9 8.5V7a3 3 0 0 1 6 0v1.5"/>'],
+];
+const tabbar = on => `<div class="a-tab">${TABS.map(([n, d]) => `<span class="${n === on ? 'on' : ''}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>${tx(n)}</span>`).join('')}</div>`;
+const track = stage => `<div class="a-track">${['Placed', 'Preparing', 'Ready', 'Picked up'].map((n, i) => `<div class="${i < stage ? 'done' : i === stage ? 'cur' : ''}">${tx(n)}</div>`).join('')}</div>`;
+
+function phoneMenu(interactive) {
+  const t = T();
+  const rows = t.items.map(it => {
+    const out = state.soldOut && it.id === t.soldTarget;
+    const isF = it.id === t.featured;
+    const price = money(it.price);
+    const inner = `${thumb(it)}<span style="min-width:0"><span class="a-nm">${esc(tx(it.name))}</span><span class="a-ds" style="display:block">${esc(tx(it.desc))}</span></span><span class="a-pr">${out ? L`Sold out` : price}</span>`;
+    if (isF && interactive) return `<button type="button" class="a-item tap-here" data-act="open" aria-label="${esc(L`Open ${tx(it.name)}`)}">${inner}</button>`;
+    return `<div class="a-item ${out ? 'out' : ''}">${inner}</div>`;
+  }).join('');
+  return `<div class="a">${sbar}<div class="a-scroll">
+    <div><div class="a-store">${esc(storeName())}</div>
+    <div class="a-chips"><span class="a-chip hot">${L`Ready by ${readyTime(t.prep + 5)}`}</span><span class="a-chip">${L`~${t.prep + 5} min`}</span><span class="a-chip">${L`Dine in`}</span></div></div>
+    <div class="a-sec">${L`Popular`}</div>${rows}</div>${tabbar('Menu')}</div>`;
+}
+function phoneItem() {
+  const t = T(), f = item(t.featured);
+  const groups = f.groups.map((g, gi) => `<div class="a-grp"><div class="a-gt"><span>${esc(tx(g.name))}</span><span>${g.multi ? L`Optional` : L`Pick one`}</span></div><div class="a-pills">${g.choices.map((c, ci) => {
+    const on = g.multi ? state.sel[gi].includes(ci) : state.sel[gi] === ci;
+    return `<button type="button" class="a-pill ${on ? 'on' : ''}" data-act="opt" data-g="${gi}" data-c="${ci}" aria-pressed="${on}">${esc(tx(choiceLabel(g, ci)))}${c[1] ? ` <span>+${money(c[1])}</span>` : ''}</button>`;
+  }).join('')}</div></div>`).join('');
+  return `<div class="a">${sbar}
+    <div class="a-banner" style="--tbg:var(--t${f.tint});background:var(--t${f.tint})"><span class="a-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></span>${glyph(f.glyph, f.tint)}</div>
+    <div class="a-scroll" style="padding-top:12px">
+      <div><div class="a-name">${esc(tx(f.name))}</div><div class="a-desc">${esc(tx(f.desc))} · ${L`from ${money(f.price)}`}</div></div>
+      ${groups}
+    </div>
+    <button type="button" class="a-cta tap-here" data-act="add"><span>${L`Add to bag`}</span><span>${money(theOrder().fp)}</span></button></div>`;
+}
+function phoneCheckout() {
+  const o = theOrder();
+  return `<div class="a">${sbar}<div class="a-scroll" style="padding-bottom:96px">
+    <div class="a-title">${L`Your bag`}</div>
+    <div class="a-card">
+      ${o.lines.map(l => `<div class="a-li"><div class="a-line"><span>1× ${esc(l.name)}</span><span>${money(l.price)}</span></div>${l.opts.length ? `<div class="a-opt">${esc(l.opts.join(' · '))}</div>` : ''}</div>`).join('')}
+    </div>
+    <div class="a-grp"><div class="a-gt"><span>${L`How would you like it?`}</span></div><div class="a-segc"><span class="on">${L`Pickup`}</span><span>${L`Dine in`}</span></div></div>
+    <div class="a-eta"><span class="a-eta-k">${L`Pickup at`}</span><span class="a-eta-v">${readyTime(T().prep)}</span><span class="a-eta-s">${L`About ${T().prep} minutes. Leave now and run your errands — we'll tell you when it's ready.`}</span></div>
+    <div class="a-grp"><div class="a-gt"><span>${L`Tip`}</span><span>${L`100% to the store`}</span></div><div class="a-pills"><span class="a-pill">${L`No tip`}</span><span class="a-pill">10%</span><span class="a-pill on">15%</span><span class="a-pill">20%</span></div></div>
+    <div class="a-tot">
+      <div class="r"><span>${L`Subtotal`}</span><span>${money(o.sub)}</span></div>
+      <div class="r"><span>${L`Sales tax`}</span><span>${money(o.tax)}</span></div>
+      <div class="r"><span>${L`Tip`}</span><span>${money(o.tip)}</span></div>
+      <div class="r t"><span>${L`Total`}</span><span>${money(o.total)}</span></div>
+    </div></div>
+    <button type="button" class="a-pay tap-here" data-act="pay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>${L`Pay ${money(o.total)}`}</button>
+    <div class="a-fine">${L`Apple Pay or card · payments by Stripe`}</div></div>`;
+}
+function phoneTrack(stage) {
+  const o = theOrder(), t = T();
+  const status = stage === 0
+    ? `<div class="a-big">${L`Sent to ${esc(storeName())}`}</div><div class="a-small">${L`Waiting for the kitchen to accept. Usually under a minute.`}</div>`
+    : `<div class="a-big">${L`Pickup at ${readyTime(t.prep)}`}</div><div class="a-small">${L`About ${t.prep} minutes away. Go shop — your phone buzzes the moment it's ready, and the code below gets you straight to the counter.`}</div>`;
+  return `<div class="a">${sbar}<div class="a-scroll">
+    <div class="a-title">${L`Order #${CODE}`}</div><div class="a-sub">${L`${CUSTOMER} · Pickup · paid ${money(o.total)}`}</div>
+    ${track(stage)}
+    <div class="a-card">${status}</div>
+    <div class="a-card a-code"><span>${L`Pickup code`}</span><b>${CODE}</b></div>
+    <div class="a-card">${o.lines.map(l => `<div class="a-li"><div class="a-line"><span>1× ${esc(l.name)}</span></div>${l.opts.length ? `<div class="a-opt">${esc(l.opts.join(' · '))}</div>` : ''}</div>`).join('')}</div>
+    </div>${tabbar('Orders')}</div>`;
+}
+function phoneReady() {
+  return `<div class="a">${sbar}<div class="a-scroll">
+    <div class="a-title">${L`Order #${CODE}`}</div><div class="a-sub">${L`${CUSTOMER} · Pickup`}</div>
+    ${track(2)}
+    <div class="a-ready"><div class="big">${L`Ready for pickup!`}</div><div class="code">${CODE}</div><div class="small">${L`Show this code at the counter at ${esc(storeName())}`}</div></div>
+    </div>${tabbar('Orders')}</div>`;
+}
+function phoneDone() {
+  const o = theOrder();
+  return `<div class="a">${sbar}<div class="a-scroll">
+    <div class="a-title">${L`Order #${CODE}`}</div><div class="a-sub">${L`${CUSTOMER} · Pickup`}</div>
+    ${track(4)}
+    <div class="a-card"><div class="a-big">${L`Picked up. Enjoy, ${CUSTOMER}!`}</div><div class="a-small">${L`Receipt sent · ${money(o.total)} paid`}</div></div>
+    <span class="a-again">${L`Order again`}</span>
+    <div class="a-small" style="text-align:center">${L`Next time it's two taps from the Orders tab.`}</div>
+    </div>${tabbar('Orders')}</div>`;
+}
+/* The demo's wall clock. A real build reads the store's live prep queue; here
+   one fixed base time keeps the phone, iPad and ticket agreeing. */
+const ORDER_CLOCK = 12 * 60 + 30;
+function fmtClock(total) {
+  const m = ((total % 1440) + 1440) % 1440, h24 = Math.floor(m / 60);
+  return `${h24 % 12 === 0 ? 12 : h24 % 12}:${String(m % 60).padStart(2, '0')} ${h24 >= 12 ? 'PM' : 'AM'}`;
+}
+function readyTime(mins) { return fmtClock(ORDER_CLOCK + mins); }
+
+function renderPhone() {
+  const s = state.step;
+  const html = s === 0 ? phoneMenu(true) : s === 1 ? phoneItem() : s === 2 ? phoneCheckout()
+    : s === 3 ? phoneTrack(0) : s === 4 ? phoneTrack(1) : s === 5 ? phoneReady() : s === 6 ? phoneDone() : phoneMenu(false);
+  $('#phone').innerHTML = html;
+}
+
+/* ---------- Kitchen iPad ---------- */
+function renderKDS() {
+  const s = state.step, o = theOrder(), t = T();
+  const mineItems = `<div class="k-items">${o.lines.map(l => `<div><b>1×</b> ${esc(l.name)}</div>${l.opts.length ? `<div class="o">${esc(l.opts.join(' · '))}</div>` : ''}`).join('')}</div>`;
+  const alex = `<div class="k-card prep"><div class="k-row"><span class="k-code">#3C1D</span><span class="k-meta">${L`Dine in`}</span></div><div class="k-meta">${L`Alex · 3 items`}</div><div class="k-bar"><i style="--w:70%"></i></div><div class="k-meta">${L`4 min left`}</div></div>`;
+  let newCol = `<div class="k-empty">${L`No new orders. You will hear a chime.`}</div>`, prepCol = alex, readyCol = `<div class="k-empty">${L`Nothing waiting`}</div>`;
+  if (s === 3) newCol = `<div class="k-card new mine"><div class="k-row"><span class="k-code">#${CODE}</span><span class="k-meta">${L`Pickup`}</span></div><div class="k-meta">${L`${CUSTOMER} · ${o.lines.length} items`}</div></div>`;
+  if (s === 4) prepCol = `<div class="k-card prep mine"><div class="k-row"><span class="k-code">#${CODE}</span><span class="k-meta">${L`Pickup`}</span></div><div class="k-meta">${L`${CUSTOMER} · paid`}</div>${mineItems}<div class="k-bar"><i id="mybar" style="--w:4%"></i></div><div class="k-meta">${L`Ready in ${t.prep} min`}</div><button type="button" class="k-btn skip tap-here" data-act="skip">${L`Skip ahead ${t.prep} min`}</button></div>` + alex;
+  if (s === 5) readyCol = `<div class="k-card ready mine"><div class="k-row"><span class="k-code">#${CODE}</span><span class="k-meta">${L`Pickup`}</span></div><div class="k-meta">${L`${CUSTOMER} · ${o.lines.length} items`}</div><button type="button" class="k-btn go tap-here" data-act="done">${L`Done · handed over`}</button></div>`;
+  const doneCount = Math.round(t.perDay * 0.55) + (s >= 6 ? 1 : 0);
+  const count = (col) => col.includes('k-card') ? (col.match(/class="k-card/g) || []).length : 0;
+  const modal = s === 3 ? `<div class="k-modal-wrap"><div class="k-modal" role="dialog" aria-label="New order">
+      <div class="k-mtop"><span class="k-new">${L`New order`}</span><span class="k-code">#${CODE}</span><span class="k-chip">${L`Pickup`}</span><span class="k-sp"></span><span class="k-meta">${L`just now`}</span></div>
+      <div><b>${CUSTOMER}</b> <span class="k-meta">${L`· paid ${money(o.total)}`}</span></div>
+      <ul class="k-lines">${o.lines.map(l => `<li><b>1×</b> ${esc(l.name)}${l.opts.length ? `<div class="o">${esc(l.opts.join(' · '))}</div>` : ''}</li>`).join('')}</ul>
+      <div class="k-actions"><button type="button" class="k-btn ghost" tabindex="-1">${L`Decline`}</button><button type="button" class="k-btn go tap-here" data-act="accept">${L`Accept · ready in ${t.prep} min`}</button></div>
+    </div></div>` : '';
+  $('#kds').innerHTML = `<div class="kds">
+    <div class="k-head"><b>${esc(storeName())}</b><span class="k-muted">${L`Kitchen`}</span><span class="k-sp"></span><span class="k-pill">${L`Accepting orders`}</span><span class="k-clock">${s >= 5 ? readyTime(t.prep) : '12:30 PM'}</span></div>
+    <div class="k-cols">
+      <div class="k-col new"><div class="k-colh"><span>${L`New`}</span><span>${count(newCol)}</span></div>${newCol}</div>
+      <div class="k-col prep"><div class="k-colh"><span>${L`Preparing`}</span><span>${count(prepCol)}</span></div>${prepCol}</div>
+      <div class="k-col ready"><div class="k-colh"><span>${L`Ready`}</span><span>${count(readyCol)}</span></div>${readyCol}</div>
+    </div>
+    <div class="k-foot"><span>${L`Completed today: ${doneCount}`}</span><span>${L`Printer connected`}</span></div>
+    ${modal}</div>`;
+  if (s === 4) requestAnimationFrame(() => requestAnimationFrame(() => { const b = $('#mybar'); if (b) b.style.setProperty('--w', '36%'); }));
+}
+
+function renderPaper() {
+  const s = state.step, o = theOrder(), paper = $('#paper');
+  paper.innerHTML = `<div class="big">#${CODE}</div><div>${L`<b>PICKUP</b> · ${CUSTOMER}`}</div><div>${esc(storeName().toUpperCase())}</div><div>${L`12:30 PM · PAID`}</div><hr>
+    ${o.lines.map(l => `<div><b>1</b> ${esc(l.name)}</div>${l.opts.map(x => `<div class="o">${esc(x)}</div>`).join('')}`).join('')}<hr><div>${L`${o.lines.length} items · PROMISED ${readyTime(T().prep)}`}</div>`;
+  const shouldShow = s === 4 || s === 5;
+  if (shouldShow && !paper.classList.contains('out')) requestAnimationFrame(() => paper.classList.add('out'));
+  if (!shouldShow) paper.classList.remove('out');
+}
+
+/* ---------- Owner dashboard ---------- */
+function renderDash() {
+  const s = state.step, o = theOrder(), t = T();
+  const tab = s === 6 ? 'Payments' : s === 7 ? 'Menu' : 'Overview';
+  const tabs = ['Overview', 'Menu', 'Payments', 'Settings'].map(n => `<span class="d-tab ${n === tab ? 'on' : ''}">${tx(n)}</span>`).join('');
+  let body = '';
+  if (tab === 'Overview') {
+    const baseN = Math.round(t.perDay * 0.55);
+    const baseSales = Math.round(baseN * t.ticket * 100 * 0.97);
+    const paid = s >= 3;
+    const n = baseN + (paid ? 1 : 0), sales = baseSales + (paid ? o.sub : 0);
+    const st = s === 3 ? ['new', 'New'] : s === 4 ? ['prep', 'Preparing'] : s === 5 ? ['ready', 'Ready'] : ['done', 'Picked up'];
+    const rows = [];
+    if (paid) rows.push(`<div class="d-row mine"><span class="c">#${CODE}</span><span class="nm">${L`${CUSTOMER} · Pickup`}</span><span class="amt">${money(o.total)}</span><span class="st ${st[0]}">${tx(st[1])}</span></div>`);
+    rows.push(`<div class="d-row"><span class="c">#3C1D</span><span class="nm">${L`Alex · Dine in`}</span><span class="amt">${money(Math.round(t.ticket * 128))}</span><span class="st prep">${L`Preparing`}</span></div>`);
+    rows.push(`<div class="d-row"><span class="c">#2E90</span><span class="nm">${L`Jordan · Pickup`}</span><span class="amt">${money(Math.round(t.ticket * 86))}</span><span class="st done">${L`Picked up`}</span></div>`);
+    rows.push(`<div class="d-row"><span class="c">#1A7C</span><span class="nm">${L`Maria · Pickup`}</span><span class="amt">${money(Math.round(t.ticket * 109))}</span><span class="st done">${L`Picked up`}</span></div>`);
+    const bump = s === 3 ? ' bump' : '';
+    body = `<div class="d-h">${L`Today`}<small>${L`Open · accepting orders`}</small></div>
+      <div class="d-stats"><div class="d-stat${bump}"><span>${L`Sales`}</span><b>${whole(sales)}</b></div><div class="d-stat${bump}"><span>${L`Orders`}</span><b>${n}</b></div><div class="d-stat"><span>${L`Average`}</span><b>${money(Math.round(sales / n))}</b></div></div>
+      <div class="d-h">${L`Recent orders`}<small>${L`Live`}</small></div><div class="d-box">${rows.join('')}</div>
+      <div class="d-mini"><span>${L`Menu`}</span><span>${L`Sold out items`}</span><span>${L`Hours`}</span><span>${L`Tips`}</span><span>${L`Tax rate`}</span><span>${L`iPads`}</span></div>`;
+  } else if (tab === 'Payments') {
+    const p = planById(state.plan);
+    const card = cardFeeOrder(o.total), fee = planFeeOrder(p, o.total);
+    body = `<div class="d-h">${L`Order #${CODE}`}<small>${L`${CUSTOMER} · Pickup · 12:30 PM`}</small></div>
+      <div class="d-box d-break">
+        <div class="r"><span>${L`Customer paid`}</span><span>${money(o.total)}</span></div>
+        <div class="r"><span>${L`Sales tax collected`}</span><span>${money(o.tax)}</span></div>
+        <div class="r"><span>${L`Tip for your team`}</span><span>${money(o.tip)}</span></div>
+        <div class="r neg"><span>${L`Card processing (Stripe)`}</span><span>−${money(card)}</span></div>
+        <div class="r neg"><span>${L`FastOrdr fee · ${esc(tx(p.name))}`}</span><span>${fee ? '−' + money(fee) : '$0.00'}</span></div>
+        <div class="r total"><span>${L`Paid to your bank`}</span><span>${money(o.total - card - fee)}</span></div>
+      </div>
+      <p class="d-note">${L`Stripe sends payouts straight to your bank account, usually within two business days. Sales tax is included in the payout for you to file as usual.`}</p>`;
+  } else {
+    const rows = t.items.map(it => {
+      const target = it.id === t.soldTarget, off = target && state.soldOut;
+      const sw = target
+        ? `<button type="button" class="sw ${off ? 'off' : 'tap-here'}" data-act="sold" role="switch" aria-checked="${!off}" aria-label="${esc(tx(it.name))}"></button>`
+        : `<span class="sw" aria-hidden="true"></span>`;
+      return `<div class="d-mi"><span class="nm">${esc(tx(it.name))}</span><span class="pr">${money(it.price)}</span><span class="lab ${off ? 'off' : ''}">${off ? L`Sold out` : L`Available`}</span>${sw}</div>`;
+    }).join('');
+    body = `<div class="d-h">${L`Menu`}<small>${L`Changes go live instantly`}</small></div><div class="d-box">${rows}</div>
+      <p class="d-note">${state.soldOut ? L`${esc(tx(item(t.soldTarget).name))} now shows as sold out in the app. Flip it back when it's restocked.` : L`Tap the switch next to ${esc(tx(item(t.soldTarget).name))} and watch the phone.`}</p>
+      <div class="d-mini"><span>${L`Edit prices`}</span><span>${L`Add photos`}</span><span>${L`Options and add-ons`}</span><span>${L`Featured items`}</span></div>`;
+  }
+  $('#dash').innerHTML = `<div class="d-wrap"><div class="d-tabs">${tabs}</div><div class="d-in">${body}</div></div>`;
+}
+
+function renderDemo() { renderSteps(); renderLanes(); renderPhone(); renderKDS(); renderPaper(); renderDash(); }
+
+/* ---------- Money section ---------- */
+function renderMoney() {
+  const o = theOrder(), p = planById(state.plan);
+  const card = cardFeeOrder(o.total), fee = planFeeOrder(p, o.total);
+  /* What actually lands in the bank: everything the customer paid, less the
+     only two things taken out of it. The sales tax sitting inside that figure
+     is still the store's to remit, which the callout says out loud. */
+  const kept = o.total - card - fee;
+  $('#moneyTitle').textContent = L`Where ${CUSTOMER}'s ${money(o.total)} goes`;
+  $('#moneyLede').textContent = L`The order from the demo — ${o.lines.map(l => l.name).join(', ')} from ${storeName()}, for pickup. Both fees below are charged on the full ${money(o.total)}, tax and tip included.`;
+  $('#moneyPlanSeg').innerHTML = state.plans.map(pl => `<button type="button" data-plan="${pl.id}" aria-pressed="${pl.id === p.id}">${esc(tx(pl.name))}</button>`).join('');
+  const segs = [
+    ['var(--keep)', kept], ['var(--m-card)', card], ['var(--brand)', fee],
+  ].filter(x => x[1] > 0);
+  $('#moneyBar').innerHTML = segs.map(([c, v]) => `<i style="background:${c};flex-grow:${v}"></i>`).join('');
+  const feeNote = p.pct === 0 && p.perOrder === 0
+    ? L`$0 on this order. The ${esc(tx(p.name))} plan is a flat $${+p.monthly.toFixed(2)} a month, whatever the order total.`
+    : `${[p.pct ? L`${+p.pct.toFixed(2)}% of the full ${money(o.total)}` : '', p.perOrder ? L`${+p.perOrder.toFixed(1)}¢ per order` : ''].filter(Boolean).join(' + ')}${L` — the sales tax and the tip are part of that figure, the same way Stripe charges on it.`}`;
+  const row = (c, label, amt, note, neg) => `<div class="mrow"><span class="sw2" style="background:${c}"></span><b>${label}</b><span class="amt">${neg && amt ? '−' : ''}${money(amt)}</span>${note ? `<p>${note}</p>` : ''}</div>`;
+  $('#moneyRows').innerHTML =
+    /* The first three all sit inside the green block of the bar — they are
+       what you keep — so they share its swatch. Only the two deductions get
+       their own colour. */
+    row('var(--keep)', L`Food and drinks`, o.sub, '') +
+    row('var(--keep)', L`Tip`, o.tip, '') +
+    row('var(--keep)', L`Sales tax`, o.tax, L`Collected at ${pctTxt(taxRate())}% and yours to file as usual.`) +
+    row('var(--m-card)', L`Card processing`, card, L`Stripe's ${+state.card.pct.toFixed(2)}% + ${+state.card.fixed.toFixed(0)}¢ on the ${money(o.total)} charged.`, true) +
+    row('var(--brand)', L`FastOrdr fee · ${esc(tx(p.name))}`, fee, feeNote, true) +
+    `<div class="mrow total"><span></span><b>${L`${CUSTOMER} paid`}</b><span class="amt">${money(o.total)}</span></div>`;
+  const pctKept = Math.round(kept / o.total * 1000) / 10;
+  $('#keepCallout').innerHTML = `<span class="k">${L`You keep from the sale`}</span><span class="v">${money(kept)}</span>
+    <p>${L`Everything ${CUSTOMER} paid except ${money(card)} of card processing and ${money(fee)} of FastOrdr fee — ${pctKept}% of the ${money(o.total)}. The ${money(o.tax)} of sales tax inside it is still yours to file, and the ${money(o.tip)} tip is your team's.`}</p>`;
+}
+
+/* ---------- Pricing ---------- */
+const SERIES = ['var(--s1)', 'var(--s2)', 'var(--s3)'];
+function renderPricing() {
+  $('#perDay').value = state.perDay; $('#ticket').value = state.ticket;
+  $('#perDayOut').textContent = state.perDay;
+  $('#ticketOut').textContent = money(Math.round(state.ticket * 100));
+  $('#presets').innerHTML = L`Typical:` + TYPE_ORDER.map(id => `<button type="button" class="chip" data-preset="${id}">${esc(tx(TYPES[id].label))}${L` · ${TYPES[id].perDay}/day · $${TYPES[id].ticket}`}</button>`).join('');
+  const orders = monthlyOrders(), sales = monthlySales(), gross = monthlyGross(), card = cardMonth();
+  $('#calcSum').innerHTML = L`About <b>${orders.toLocaleString()} online orders</b> and <b>${whole(sales)}</b> in food and drink a month — <b>${whole(gross)}</b> actually charged to cards once ${pctTxt(taxRate())}% tax and a ${pctTxt(TIP)}% tip are added. Both fees are charged on that larger figure.`;
+  const fees = state.plans.map(planMonth);
+  const min = Math.min(...fees);
+  $('#plans').innerHTML = state.plans.map((p, i) => {
+    const allIn = fees[i] + card;
+    /* Dollars only here. The take percentage is quoted once, in the fixed
+       $10,000 example below; showing it here too made the same plan read as
+       two different rates, because this block follows the sliders. */
+    return `<button type="button" class="plan" data-plan="${p.id}" aria-pressed="${p.id === state.plan}">
+      ${fees[i] === min ? `<span class="badge">${L`Lowest for you`}</span>` : ''}
+      <span class="plan-name"><i style="background:${SERIES[i]}"></i>${esc(tx(p.name))}</span>
+      <span class="plan-price">${priceLine(p)}</span>
+      <span class="plan-best">${L`Best for: ${esc(tx(p.best || ''))}`}</span>
+      <span class="plan-month"><span class="k">${L`Your month`}</span><span class="v">${whole(fees[i])}</span>
+      <span class="s">${L`FastOrdr's fee on the ${whole(gross)} charged at this volume`}</span>
+      <span class="allin">${L`Plus ${whole(card)} card processing, the same on every plan — ${whole(allIn)} all in`}</span></span>
+      <span class="plan-sel" ${p.id === state.plan ? '' : 'hidden'}>${L`Shown in the money breakdown above`}</span>
+    </button>`;
+  }).join('');
+  $('#legend').innerHTML = state.plans.map((p, i) => `<span><i style="background:${SERIES[i]}"></i>${esc(tx(p.name))}</span>`).join('');
+  $('#breakeven').innerHTML = breakevenText();
+  renderChart();
+  renderTake();
+}
+
+/* ---- Worked example on a fixed $10,000 actually charged ---- */
+const GROSS_EX = 1000000;
+function renderTake() {
+  const G = grossUp();
+  const food = Math.round(GROSS_EX / G);
+  const taxEx = Math.round(food * taxRate()), tipEx = GROSS_EX - food - taxEx;
+  const avgGross = Math.max(1, Math.round(state.ticket * 100 * G));
+  const orders = Math.max(1, Math.round(GROSS_EX / avgGross));
+  const card = Math.round(GROSS_EX * state.card.pct / 100 + orders * state.card.fixed);
+  const fees = state.plans.map(p => Math.round(p.monthly * 100 + GROSS_EX * p.pct / 100 + orders * p.perOrder));
+  const min = Math.min(...fees);
+  const tied = fees.filter(f => f === min).length > 1;
+  $('#take').innerHTML = `
+    <div class="take-head">
+      <span class="eyebrow">${L`Worked example`}</span>
+      <h3>${L`What we take out of $10,000`}</h3>
+      <p>${L`$10,000 here is the amount actually <b>charged to cards</b>, and our percentage is charged on all of it — food, sales tax and tip together. At ${esc(storeName())}'s ${pctTxt(taxRate())}% sales tax and a ${pctTxt(TIP)}% tip, that $10,000 breaks down as about <b>${money(food)}</b> of food and drink, ${money(taxEx)} of sales tax and ${money(tipEx)} of tips, across roughly ${orders} orders of ${money(avgGross)} each.`}</p>
+    </div>
+    <div class="take-grid">
+      ${state.plans.map((p, i) => {
+        const fee = fees[i], allIn = fee + card;
+        return `<div class="tk ${fee === min ? 'best' : ''}">
+          <span class="tk-nm"><i style="background:${SERIES[i]}"></i>${esc(tx(p.name))}</span>
+          <span class="tk-k">${L`FastOrdr's take`}</span>
+          <span class="tk-pct">${(fee / GROSS_EX * 100).toFixed(2)}%</span>
+          <span class="tk-sub">${L`${money(fee)} of the $10,000`}</span>
+          <div class="tk-rows">
+            <div><span>${L`FastOrdr fee`}</span><span>${money(fee)}</span></div>
+            <div><span>${L`Card processing (Stripe)`}</span><span>${money(card)}</span></div>
+            <div class="tot"><span>${L`All in`}</span><span>${money(allIn)}</span></div>
+            <div><span>${L`of the $10,000 charged`}</span><span>${(allIn / GROSS_EX * 100).toFixed(2)}%</span></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <p class="take-foot">${L`Card processing is Stripe's ${+state.card.pct.toFixed(2)}% + ${+state.card.fixed.toFixed(0)}¢, paid by you straight to Stripe on every plan, so it is the same in all three columns.`} ${tied ? L`Two plans come out identical at this exact volume — that is the crossover point, and above it the flat plan wins.` : ''} ${L`These are the only two deductions; nothing else comes out of the $10,000.`}</p>`;
+}
+
+/* Cost per dollar of FOOD sales, so the plan crossover points below stay
+   comparable with the sales figure an owner actually tracks. */
+function effRate(p) { return p.pct / 100 * grossUp() + p.perOrder / (state.ticket * 100); }
+function breakevenText() {
+  const ps = [...state.plans].sort((a, b) => a.monthly - b.monthly);
+  const lines = [];
+  for (let i = 1; i < ps.length; i++) {
+    const a = ps[i - 1], b = ps[i];
+    const ra = effRate(a), rb = effRate(b);
+    if (b.monthly > a.monthly && ra > rb) {
+      const x = (b.monthly - a.monthly) * 100 / (ra - rb);
+      const perDay = x / (state.ticket * 100) / 30;
+      lines.push(`<span>${L`${esc(tx(b.name))} costs less than ${esc(tx(a.name))} once online sales pass ${whole(x)} a month, about ${Math.max(1, Math.round(perDay))} orders a day at your average.`}</span>`);
+    }
+  }
+  return lines.join('') || `<span>${L`Adjust the plans to see where they cross.`}</span>`;
+}
+
+function niceStep(v) { const p = Math.pow(10, Math.floor(Math.log10(v))); const f = v / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; }
+function niceScale(raw, n) { const step = niceStep(raw / n); const max = Math.ceil(raw / step) * step; const ticks = []; for (let v = 0; v <= max + 1e-6; v += step) ticks.push(v); return { max, ticks }; }
+function axisMoney(c) { const d = Math.round(c / 100); return d >= 1000 ? '$' + (d / 1000).toFixed(d % 1000 ? 1 : 0).replace(/\.0$/, '') + 'k' : '$' + d; }
+
+let geom = null;
+function renderChart() {
+  const box = $('#chart');
+  const W = Math.max(300, Math.round(box.clientWidth || 640));
+  const narrow = W < 520;
+  const H = narrow ? 250 : 300, PL = 52, R = narrow ? 92 : 112, Tp = 22, B = 34;
+  const tC = state.ticket * 100, salesC = monthlySales();
+  const xs = niceScale(Math.max(2000000, salesC * 1.5), narrow ? 3 : 4), xMax = xs.max;
+  const G = grossUp();
+  /* Total monthly cost, not just our cut — an owner pays Stripe out of the same
+     money and does not care which line it came from. Card processing is identical
+     on every plan, so it shifts all three lines equally and leaves the crossover
+     points quoted above unchanged. */
+  const cardAt = x => x * G * state.card.pct / 100 + (x / tC) * state.card.fixed;
+  const cost = (p, x) => p.monthly * 100 + x * G * p.pct / 100 + (x / tC) * p.perOrder + cardAt(x);
+  const yRaw = Math.max(10000, ...state.plans.map(p => Math.max(cost(p, 0), cost(p, xMax)))) * 1.04;
+  const ys = niceScale(yRaw, 4), yMax = ys.max;
+  const px = x => PL + x / xMax * (W - PL - R), py = y => H - B - y / yMax * (H - Tp - B);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(L`Total monthly cost by plan — FastOrdr's fee plus card processing — as online sales grow from $0 to ${axisMoney(xMax)} a month`)}">`;
+  ys.ticks.forEach(v => { s += `<line class="grid" x1="${PL}" x2="${W - R}" y1="${py(v)}" y2="${py(v)}"/><text class="tick" x="${PL - 8}" y="${py(v) + 4}" text-anchor="end">${axisMoney(v)}</text>`; });
+  xs.ticks.forEach(v => { s += `<text class="tick" x="${px(v)}" y="${H - B + 18}" text-anchor="middle">${axisMoney(v)}</text>`; });
+  s += `<line class="axis" x1="${PL}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/>`;
+  s += `<text class="ax-t" x="${W - R}" y="${H - 2}" text-anchor="end">${L`Online sales per month`}</text>`;
+  const mx = px(Math.min(salesC, xMax));
+  s += `<line class="marker" x1="${mx}" x2="${mx}" y1="${Tp}" y2="${H - B}"/><text class="marker-t" x="${mx}" y="${Tp - 8}" text-anchor="middle">${L`Your sales`}</text>`;
+  state.plans.forEach((p, i) => { s += `<line class="ln" style="stroke:${SERIES[i]}" x1="${px(0)}" y1="${py(cost(p, 0))}" x2="${px(xMax)}" y2="${py(cost(p, xMax))}"/>`; });
+  state.plans.forEach((p, i) => { s += `<circle class="dot" style="fill:${SERIES[i]}" cx="${mx}" cy="${py(cost(p, Math.min(salesC, xMax)))}" r="5"/>`; });
+  const labs = state.plans.map((p, i) => ({ i, y: py(cost(p, xMax)), name: p.name })).sort((a, b) => a.y - b.y);
+  for (let k = 1; k < labs.length; k++) if (labs[k].y - labs[k - 1].y < 16) labs[k].y = labs[k - 1].y + 16;
+  const over = labs.length ? labs[labs.length - 1].y - (H - B) : 0;
+  if (over > 0) labs.forEach(l => { l.y -= over; });
+  labs.forEach(l => { const nm = tx(l.name); s += `<text class="dl" x="${W - R + 8}" y="${l.y + 4}">${esc(nm.length > 14 && narrow ? nm.slice(0, 13) + '…' : nm)}</text>`; });
+  s += `<line class="xh" x1="0" x2="0" y1="${Tp}" y2="${H - B}" visibility="hidden"/>`;
+  state.plans.forEach((p, i) => { s += `<circle class="hd" style="fill:${SERIES[i]};stroke:var(--surface);stroke-width:2" r="4.5" cx="0" cy="0" visibility="hidden"/>`; });
+  s += `</svg><div class="tip" hidden></div>`;
+  box.innerHTML = s;
+  geom = { W, H, PL, R, Tp, B, xMax, cost, cardAt, px, py };
+}
+
+function chartHover(e) {
+  if (!geom) return;
+  const svg = $('#chart svg'), tip = $('#chart .tip');
+  const r = svg.getBoundingClientRect();
+  const sx = (e.clientX - r.left) * (geom.W / r.width);
+  const xh = $('#chart .xh'), dots = $$('#chart .hd');
+  if (sx < geom.PL || sx > geom.W - geom.R) { chartLeave(); return; }
+  const xv = (sx - geom.PL) / (geom.W - geom.PL - geom.R) * geom.xMax;
+  xh.setAttribute('x1', sx); xh.setAttribute('x2', sx); xh.setAttribute('visibility', 'visible');
+  const vals = state.plans.map(p => geom.cost(p, xv));
+  dots.forEach((d, i) => { d.setAttribute('cx', sx); d.setAttribute('cy', geom.py(vals[i])); d.setAttribute('visibility', 'visible'); });
+  const orders = Math.round(xv / (state.ticket * 100));
+  tip.innerHTML = `<div class="h">${L`${whole(xv)} sales · ${orders.toLocaleString()} orders`}</div>`
+    + state.plans.map((p, i) => `<div class="r"><span><i style="background:${SERIES[i]}"></i>${esc(tx(p.name))}</span><b>${whole(vals[i])}</b></div>`).join('')
+    + `<div class="sub">${L`Each total includes ${whole(geom.cardAt(xv))} of card processing.`}</div>`;
+  tip.hidden = false;
+  const box = $('#chart').getBoundingClientRect();
+  const cx = e.clientX - box.left, tw = tip.offsetWidth;
+  const left = cx + 14 + tw > box.width ? cx - 14 - tw : cx + 14;
+  tip.style.transform = `translate(${Math.max(0, left)}px, 8px)`;
+}
+function chartLeave() {
+  const tip = $('#chart .tip'); if (tip) tip.hidden = true;
+  const xh = $('#chart .xh'); if (xh) xh.setAttribute('visibility', 'hidden');
+  $$('#chart .hd').forEach(d => d.setAttribute('visibility', 'hidden'));
+}
+
+function renderPresenter() {
+  $('#ptableBody').innerHTML = state.plans.map((p, i) => `<tr>
+    <td><span style="display:inline-block;width:12px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px;background:${SERIES[i]}"></span>${i + 1}</td>
+    <td><input type="text" id="pn-${i}" data-pi="${i}" data-k="name" value="${esc(p.name)}" maxlength="24" aria-label="Plan ${i + 1} name"></td>
+    <td><input type="number" id="pm-${i}" data-pi="${i}" data-k="monthly" value="${p.monthly}" min="0" step="1" aria-label="${esc(p.name)} monthly fee in dollars"></td>
+    <td><input type="number" id="pp-${i}" data-pi="${i}" data-k="pct" value="${p.pct}" min="0" step="0.1" aria-label="${esc(p.name)} percent per order"></td>
+    <td><input type="number" id="po-${i}" data-pi="${i}" data-k="perOrder" value="${p.perOrder}" min="0" step="1" aria-label="${esc(p.name)} cents per order"></td></tr>`).join('');
+  $('#cardPct').value = state.card.pct; $('#cardFixed').value = state.card.fixed;
+}
+
+/* ---------- Hardware ---------- */
+function hwPrice(h) { return state.haveIpad && h.havePrice != null ? h.havePrice : h.price; }
+function renderHardware() {
+  const sel = HW.filter(h => state.hw[h.id]);
+  const core = HW.filter(h => state.hw[h.id]).map(h => h.id).sort().join(',');
+  $('#kits').innerHTML = KITS.map(k => {
+    const total = k.items.reduce((a, id) => a + hwPrice(HW.find(h => h.id === id)), 0);
+    return `<button type="button" class="kit" data-kit="${k.id}" aria-pressed="${[...k.items].sort().join(',') === core}">${esc(tx(k.name))} <small>${L`· about $${Math.round(total / 10) * 10}`}</small></button>`;
+  }).join('');
+  $('#hwList').innerHTML = HW.map(h => {
+    const on = !!state.hw[h.id];
+    const pr = hwPrice(h);
+    return `<label class="hw ${on ? '' : 'off'}" for="hw-${h.id}">
+      <input type="checkbox" id="hw-${h.id}" data-hw="${h.id}" ${on ? 'checked' : ''}>
+      <span class="hw-ic"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${HW_ICONS[h.icon]}</svg></span>
+      <span style="min-width:0"><span class="role">${esc(tx(h.role))}</span><span class="nm">${esc(tx(h.name))}</span><span class="what">${esc(tx(h.what))}</span>${h.note ? `<span class="note">${h.id === 'ipad' && state.haveIpad ? L`Using the iPad you already have — just the stand to buy.` : esc(tx(h.note))}</span>` : ''}</span>
+      <span class="price">$${pr}<small>${L`one time`}</small></span></label>`;
+  }).join('');
+  const total = sel.reduce((a, h) => a + hwPrice(h), 0);
+  const p = planById(state.plan);
+  const supplies = [state.hw.label ? L`labels about $20 a roll` : '', state.hw.ticket ? L`ticket paper about $35 for 50 rolls` : ''].filter(Boolean);
+  $('#hwTotal').innerHTML = `<span class="k">${L`One-time hardware`}</span><span class="v">${L`about $${Math.round(total / 10) * 10}`}</span>
+    <ul>${sel.map(h => `<li><span>${esc(tx(h.name))}</span><span>$${hwPrice(h)}</span></li>`).join('') || `<li><span>${L`Nothing selected`}</span><span>$0</span></li>`}</ul>
+    <hr><span class="k">${L`Then each month`}</span>
+    <p>${L`${whole(planMonth(p))} on ${esc(tx(p.name))} at your volume, plus card processing on each order`}${supplies.length ? L`, plus ${supplies.join(L` and `)}` : ''}。</p>
+    <hr><label for="haveIpad"><input type="checkbox" id="haveIpad" ${state.haveIpad ? 'checked' : ''}>${L`I already have an iPad`}</label>`;
+}
+
+function renderPlain() {
+  const items = [
+    ['Month to month.', 'No contract. Cancel from the dashboard any time.'],
+    ['Keep what works.', 'Your POS, your counter and your delivery-app listing all stay.'],
+    ['Tips and tax pass through to you.', 'The tip reaches your team in full and the tax is yours to file. Our percentage is worked out on the whole charged amount, tax and tip included — the same base Stripe uses.'],
+    ['You set the menu.', 'Prices, hours, photos and sold-out items, whenever you like.'],
+    ['Your customers stay yours.', 'Their orders and contact details belong to your store.'],
+    ['Card data never touches FastOrdr.', 'Payments run on Stripe, straight to your account.'],
+  ];
+  $('#plain').innerHTML = items.map(([b, t]) => `<li>${ICON.check}<span><b>${tx(b)}</b> ${tx(t)}</span></li>`).join('');
+}
+
+function renderAll() { renderSetup(); renderDemo(); renderMoney(); renderPricing(); renderPresenter(); renderHardware(); }
+
+/* ---------- Demo navigation ---------- */
+let timer = null, soldTimer = null;
+function goTo(i, fromPlay) {
+  state.step = Math.max(0, Math.min(STEPS.length - 1, i));
+  state.laneOverride = null;
+  if (!fromPlay) stopPlay();
+  if (state.step === STEPS.length - 1 && state.playing) {
+    clearTimeout(soldTimer);
+    soldTimer = setTimeout(() => { if (state.step === STEPS.length - 1) { state.soldOut = true; renderPhone(); renderDash(); } stopPlay(); }, 1800);
+  }
+  renderDemo();
+  if (state.step === 6) renderMoney();
+}
+function startPlay() {
+  if (state.step === STEPS.length - 1) { state.soldOut = false; state.step = 0; resetSel(); }
+  state.playing = true; renderSteps();
+  clearInterval(timer);
+  timer = setInterval(() => {
+    if (state.step >= STEPS.length - 1) { clearInterval(timer); return; }
+    goTo(state.step + 1, true);
+  }, 4800);
+  renderDemo();
+}
+function stopPlay() { state.playing = false; clearInterval(timer); renderSteps(); }
+function resetSel() { const f = item(T().featured); state.sel = f.groups.map(g => g.multi ? [...g.def] : g.def); }
+
+/* ---------- Events ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('button,[data-act]');
+  if (!b) return;
+  if (b.dataset.lang) { setLang(b.dataset.lang); return; }
+  if (b.dataset.type) {
+    state.type = b.dataset.type; saved.set('type', state.type);
+    resetType(); stopPlay(); state.step = Math.min(state.step, STEPS.length - 1);
+    renderAll(); return;
+  }
+  if (b.dataset.step != null && b.classList.contains('step-btn')) { goTo(+b.dataset.step); return; }
+  if (b.dataset.lane && b.closest('#laneTabs')) { state.laneOverride = b.dataset.lane; renderLanes(); return; }
+  if (b.dataset.plan) { state.plan = b.dataset.plan; saved.set('plan', state.plan); renderMoney(); renderPricing(); renderHardware(); if (state.step === 6) renderDash(); return; }
+  if (b.dataset.preset) { const t = TYPES[b.dataset.preset]; state.perDay = t.perDay; state.ticket = t.ticket; renderPricing(); renderHardware(); return; }
+  if (b.dataset.kit) {
+    const k = KITS.find(x => x.id === b.dataset.kit);
+    ['ipad', 'label', 'ticket'].forEach(id => { state.hw[id] = k.items.includes(id); });
+    saved.set('hw3', state.hw); renderHardware(); return;
+  }
+  const act = b.dataset.act;
+  if (!act) return;
+  if (act === 'open') goTo(1);
+  else if (act === 'opt') {
+    const g = +b.dataset.g, c = +b.dataset.c, grp = item(T().featured).groups[g];
+    if (grp.multi) { const arr = state.sel[g]; const at = arr.indexOf(c); if (at >= 0) arr.splice(at, 1); else { arr.push(c); arr.sort(); } }
+    else state.sel[g] = c;
+    stopPlay(); renderPhone(); renderSteps(); renderMoney();
+  }
+  else if (act === 'add') goTo(2);
+  else if (act === 'pay') goTo(3);
+  else if (act === 'accept') goTo(4);
+  else if (act === 'skip') goTo(5);
+  else if (act === 'done') goTo(6);
+  else if (act === 'sold') { state.soldOut = !state.soldOut; stopPlay(); renderPhone(); renderDash(); }
+});
+
+$('#prevBtn').addEventListener('click', () => goTo(state.step - 1));
+$('#nextBtn').addEventListener('click', () => goTo(state.step + 1));
+$('#restartBtn').addEventListener('click', () => { state.soldOut = false; resetSel(); goTo(0); renderMoney(); });
+$('#playBtn').addEventListener('click', () => state.playing ? stopPlay() : startPlay());
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,textarea,select,[contenteditable]') || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === 'ArrowRight') { goTo(state.step + 1); }
+  else if (e.key === 'ArrowLeft') { goTo(state.step - 1); }
+});
+
+$('#storeName').addEventListener('input', e => {
+  state.names[state.type] = e.target.value; saved.set('names', state.names);
+  renderSteps(); renderPhone(); renderKDS(); renderPaper(); renderDash(); renderMoney();
+});
+$('#perDay').addEventListener('input', e => { state.perDay = +e.target.value; renderPricing(); renderHardware(); });
+$('#ticket').addEventListener('input', e => { state.ticket = +e.target.value; renderPricing(); renderHardware(); });
+
+$('#ptableBody').addEventListener('input', e => {
+  const el = e.target, i = +el.dataset.pi, k = el.dataset.k;
+  if (!k) return;
+  if (k === 'name') { state.plans[i].name = el.value.trim() || DEFAULT_PLANS[i].name; }
+  else { const v = parseFloat(el.value); if (!isFinite(v) || v < 0) return; state.plans[i][k] = v; }
+  saved.set('plans2', state.plans);
+  renderPricing(); renderMoney(); renderHardware(); if (state.step === 6) renderDash();
+});
+['cardPct', 'cardFixed'].forEach(id => $('#' + id).addEventListener('input', e => {
+  const v = parseFloat(e.target.value); if (!isFinite(v) || v < 0) return;
+  state.card[id === 'cardPct' ? 'pct' : 'fixed'] = v; saved.set('card', state.card);
+  renderPricing(); renderMoney(); if (state.step === 6) renderDash();
+}));
+$('#resetPlans').addEventListener('click', () => {
+  state.plans = clone(DEFAULT_PLANS); state.card = { ...DEFAULT_CARD };
+  saved.set('plans2', state.plans); saved.set('card', state.card);
+  if (!state.plans.some(p => p.id === state.plan)) state.plan = 'payg';
+  renderPresenter(); renderPricing(); renderMoney(); renderHardware();
+});
+
+$('#hardware').addEventListener('change', e => {
+  if (e.target.dataset.hw) { state.hw[e.target.dataset.hw] = e.target.checked; saved.set('hw3', state.hw); renderHardware(); }
+  else if (e.target.id === 'haveIpad') { state.haveIpad = e.target.checked; saved.set('haveIpad', state.haveIpad); renderHardware(); }
+});
+
+/* ---------- Japanese ----------
+   Keys are the English, normalised to single spaces. {0}, {1}... are the
+   interpolated values in source order. Prices, times and store names are left
+   to flow through untouched. */
+const JA = {
+  "$0 on this order. The {0} plan is a flat ${1} a month, whatever the order total.": "この注文では0ドルです。{0}プランは注文額にかかわらず月額 ${1} の定額です。",
+  "$10,000 here is the amount actually <b>charged to cards</b>, and our percentage is charged on all of it — food, sales tax and tip together. At {0}'s {1}% sales tax and a {2}% tip, that $10,000 breaks down as about <b>{3}</b> of food and drink, {4} of sales tax and {5} of tips, across roughly {6} orders of {7} each.": "ここでの10,000ドルは、実際に<b>カードへ請求した金額</b>です。当社の料率は、商品代金・売上税・チップを合わせたその全額にかかります。{0}の売上税{1}%、チップ{2}%で計算すると、内訳は商品代金が約<b>{3}</b>、売上税が{4}、チップが{5}。1件あたり{7}の注文、およそ{6}件分です。",
+  ", no per-order fee": "、注文ごとの手数料なし",
+  ", plus {0}": "、それに{0}",
+  "100% sweet": "甘さ100%",
+  "100% to the store": "全額お店へ",
+  "12 oz": "12オンス",
+  "12:30 PM · PAID": "12:30 PM・支払済",
+  "16 oz": "16オンス",
+  "25% sweet": "甘さ25%",
+  "4 min left": "あと4分",
+  "50% sweet": "甘さ50%",
+  "75% sweet": "甘さ75%",
+  "<b>${0}</b> a month": "月額 <b>${0}</b>",
+  "<b>PICKUP</b> · {0}": "<b>お持ち帰り</b>・{0}",
+  "A five-minute Stripe form, so customer payments go straight to your account.": "Stripeのフォームに5分ほど入力するだけ。お客様のお支払いが、そのままお店の口座に入ります。",
+  "A label prints for every item and the receipt prints for the bag. The order waits under Preparing with a {0}-minute timer, and Sam's app counts down to {1} — so Sam can be two shops away and nobody rings to ask. Skip ahead when you're ready.": "商品ごとにラベルが、袋用にレシートが印刷されます。注文は「調理中」に入り、{0}分のタイマーが動きます。Samのアプリは{1}に向けてカウントダウンするので、Samが二軒先にいても、確認の電話がかかってくることはありません。先に進めるには下のボタンを押してください。",
+  "A link to your current online menu, a PDF, or phone photos of the printed one.": "今お使いのオンラインメニューのリンク、PDF、紙のメニューをスマホで撮った写真でも構いません。",
+  "A potential customer sees the line and decides to try a different store.": "来ようとしたお客様が行列を見て、別の店に行ってしまいます。",
+  "A steady stream of online orders every day.": "毎日コンスタントにネット注文が入るお店に。",
+  "About $120 used plus a $30 stand. New iPad from $349.": "中古で約120ドル、スタンドが30ドル。新品のiPadなら349ドルから。",
+  "About $520, one time": "初期費用 約520ドル、一度きり",
+  "About <b>{0} online orders</b> and <b>{1}</b> in food and drink a month — <b>{2}</b> actually charged to cards once {3}% tax and a {4}% tip are added. Both fees are charged on that larger figure.": "月あたり<b>ネット注文 約{0}件</b>、商品代金で<b>{1}</b>。売上税{3}%とチップ{4}%が加わるので、カードに実際に請求されるのは<b>{2}</b>です。どちらの手数料も、この大きい方の金額にかかります。",
+  "About twenty-five minutes of your time. We do the menu setup, and a person checks it before anything goes live.": "お手間は合計25分ほど。メニューの登録はこちらで行い、公開前に担当者が必ず確認します。",
+  "About {0} minutes away. Go shop — your phone buzzes the moment it's ready, and the code below gets you straight to the counter.": "あと約{0}分です。買い物を続けてください——できあがった瞬間にスマホに通知が届きます。下のコードを見せれば、そのままカウンターで受け取れます。",
+  "About {0} minutes. Leave now and run your errands — we'll tell you when it's ready.": "約{0}分です。今から用事を済ませても大丈夫——できあがったらお知らせします。",
+  "Accept · ready in {0} min": "受注・{0}分で提供",
+  "Accepting an order prints a label for every individual item, plus the one customer receipt for the bag.": "注文を受けると、商品ごとのラベルと、袋に入れるお客様用レシートが1枚印刷されます。",
+  "Accepting orders": "注文受付中",
+  "Add photos": "写真を追加",
+  "Add to bag": "カートに入れる",
+  "Add-ons": "トッピング",
+  "Adjust plan numbers": "プランの数値を調整",
+  "Adjust the plans to see where they cross.": "プランの数値を変えると、どこで入れ替わるかが分かります。",
+  "Alex · 3 items": "Alex・3点",
+  "Alex · Dine in": "Alex・店内",
+  "All in": "合計",
+  "Almond milk": "アーモンドミルク",
+  "Apple Pay or card · payments by Stripe": "Apple Payまたはカード・決済はStripe",
+  "Approximate US prices, October 2026: used iPad 9th or 10th generation $110–140 plus a stand or wall mount about $30, so roughly $150 for the screen; Brother QL-810W about $170 (Brother, Staples); Star TSP143IIIBI about $200 used. A new iPad is $349 and a new Star is $330–380 if you would rather not buy used. Supplies are bought as you go. If you already have an iPad, tick the box and the kit drops to about $400. We sell the kit at these prices and do not mark it up.": "2026年10月時点の米国でのおおよその価格です。中古のiPad（第9〜10世代）が110〜140ドル、スタンドまたは壁掛けが約30ドルで、画面まわりは約150ドル。Brother QL-810Wが約170ドル（Brother、Staples）、Star TSP143IIIBIは中古で約200ドル。新品がよければ、iPadが349ドル、Starが330〜380ドルです。消耗品は使った分だけ。iPadをすでにお持ちの場合はチェックを入れると、合計は約400ドルになります。機材はこの価格のままお渡しし、上乗せはしません。",
+  "Available": "販売中",
+  "Average": "平均単価",
+  "Average order": "平均注文額",
+  "Avocado": "アボカド",
+  "Back": "戻る",
+  "Bag": "カート",
+  "Baked this morning": "今朝焼きました",
+  "Bara Toro Charsiu": "バラトロチャーシュー",
+  "Basil, salt and pepper": "バジル・塩こしょう",
+  "Beef Noodle Soup": "牛肉麺",
+  "Best for: {0}": "向いているお店：{0}",
+  "Blueberry Muffin": "ブルーベリーマフィン",
+  "Boba & tea": "タピオカ・お茶",
+  "Boba pearls": "タピオカ",
+  "Braised beef, bok choy, hand-pulled noodles": "煮込み牛肉、青梗菜、手延べ麺",
+  "Breakfast Burrito": "ブレックファストブリトー",
+  "Brother QL-810W": "Brother QL-810W",
+  "Brother QL-810W for item labels <b>and</b> Star TSP143IIIBI for receipts — they do different jobs, so you want both.": "商品ラベルはBrother QL-810W、レシートはStar TSP143IIIBI。<b>役割が違う</b>ので、両方そろえるのがおすすめです。",
+  "Brown Sugar Milk Tea": "黒糖ミルクティー",
+  "Browse your menu, customize, pay, and pick it up or eat in. No waiting in line, no phone calls.": "メニューを見て、カスタマイズして、支払って、持ち帰るか店内で。行列も電話も必要ありません。",
+  "Busy stores that want one fixed bill.": "注文が多く、毎月定額にしたいお店に。",
+  "Caesar Salad": "シーザーサラダ",
+  "Café": "カフェ",
+  "Card data never touches FastOrdr.": "カード情報はFastOrdrを経由しません。",
+  "Card processing": "カード決済手数料",
+  "Card processing (Stripe)": "カード決済手数料（Stripe）",
+  "Card processing is Stripe's standard US online rate, paid by the store directly to Stripe on every plan.": "カード決済手数料は、Stripeの米国オンライン標準料率です。どのプランでも、お店からStripeへ直接お支払いいただきます。",
+  "Card processing is Stripe's {0}% + {1}¢, paid by you straight to Stripe on every plan, so it is the same in all three columns.": "カード決済手数料はStripeの{0}% + {1}¢です。どのプランでもお店からStripeへ直接支払うため、3つの列すべてで同じ金額になります。",
+  "Change prices, mark items sold out, set hours, and see every sale and payout.": "価格の変更、売り切れの設定、営業時間の設定、売上と入金の確認まで。",
+  "Changes go live instantly": "変更は即座に反映",
+  "Char Siu Rice Bowl": "チャーシュー丼",
+  "Check the draft": "下書きを確認",
+  "Cheese foam": "チーズフォーム",
+  "Classic crust": "レギュラー生地",
+  "Click the highlighted buttons inside the screens, use Next, or press Play and let it run.": "画面の中で光っているボタンを押すか、「次へ」を押すか、「再生」で自動再生してください。",
+  "Cloud Ear Mushroom": "きくらげ",
+  "Cold Brew": "コールドブリュー",
+  "Collected at {0}% and yours to file as usual.": "{0}%でお預かりします。申告はこれまで通りお店で行ってください。",
+  "Complete kit · recommended": "フルセット・おすすめ",
+  "Completed today: {0}": "本日の完了：{0}件",
+  "Connect your bank": "銀行口座をつなぐ",
+  "Crust": "生地",
+  "Customer": "お客様",
+  "Customer paid": "お客様のお支払い",
+  "Customer receipt": "お客様用レシート",
+  "Customer's phone": "お客様のスマホ",
+  "Customers order ahead, pay in the app and see when their food will be ready, so they shop instead of queueing. Your kitchen gets each order on an iPad, labels and the receipt print by themselves, and your staff cook instead of taking orders. No commission on your own orders.": "お客様はアプリで先に注文して支払い、受け取り時刻も分かるので、行列に並ばずに買い物を続けられます。厨房では注文がiPadに届き、商品ラベルとレシートは自動で印刷。スタッフは注文を取る代わりに調理に集中できます。自店の注文に販売手数料はかかりません。",
+  "Decline": "辞退",
+  "Dine in": "店内",
+  "Done · handed over": "完了・お渡し済み",
+  "Double shot, steamed milk": "ダブルショット、スチームミルク",
+  "Each order shows what the customer paid, every fee, and what you get. Stripe pays the money straight into your bank account.": "注文ごとに、お客様のお支払い額、各種手数料、お店に残る金額が表示されます。Stripeがそのままお店の銀行口座へ入金します。",
+  "Each total includes {0} of card processing.": "いずれの金額にも、カード決済手数料 {0} が含まれます。",
+  "Edit prices": "価格を編集",
+  "Egg, potatoes, cheddar, salsa roja": "卵、ポテト、チェダー、サルサロハ",
+  "Enter a six-digit code, place a test order, and you're taking orders.": "6桁のコードを入力してテスト注文を1件。これで注文を受けられます。",
+  "Every plan includes your store in the FastOrdr app, the kitchen iPad app, the owner dashboard and support. The only difference is how you pay for it. Enter your numbers to see which costs least.": "どのプランでも、FastOrdrアプリへの掲載、厨房用iPadアプリ、オーナー用ダッシュボード、サポートがすべて含まれます。違うのは支払い方だけです。お店の数字を入れて、どれが一番安いかご確認ください。",
+  "Everything {0} paid except {1} of card processing and {2} of FastOrdr fee — {3}% of the {4}. The {5} of sales tax inside it is still yours to file, and the {6} tip is your team's.": "{0}さんがお支払いになった金額から、カード決済手数料 {1} とFastOrdr手数料 {2} を引いた分——{4} の{3}%です。この中に含まれる売上税 {5} は引き続きお店が申告し、チップ {6} はスタッフのものです。",
+  "Extra Toroniku": "特上とろ肉",
+  "Extra cheese": "チーズ追加",
+  "Extra chicken": "チキン追加",
+  "Extra shot": "ショット追加",
+  "FastOrdr fee": "FastOrdr手数料",
+  "FastOrdr fee · {0}": "FastOrdr手数料・{0}",
+  "FastOrdr is for pickup and dine-in, and the customer relationship stays with your store. Many stores keep a delivery app for delivery and send everyone who comes in to their own ordering.": "FastOrdrはお持ち帰りと店内飲食のためのもので、お客様との関係はお店に残ります。配達はデリバリーアプリに任せたまま、来店されたお客様は自店の注文に誘導する——そうしているお店も多くあります。",
+  "FastOrdr's fee on the {0} charged at this volume": "この売上規模で、カード請求額 {0} にかかるFastOrdrの手数料",
+  "FastOrdr's take": "FastOrdrの取り分",
+  "Featured items": "おすすめ商品",
+  "Finds your store": "お店を見つける",
+  "Flavored Egg": "味付け玉子",
+  "Follow one order from start to finish": "1件の注文を、最初から最後まで",
+  "Food and drinks": "商品代金",
+  "Food ordered two different ways: with the app, or standing in line": "同じ食事を、2通りの注文で：アプリか、行列に並ぶか",
+  "For store owners and managers": "店舗オーナー・店長の方へ",
+  "For trying out prices before or during a meeting. Changes are saved in this browser only.": "商談の前や最中に価格を試すためのものです。変更はこのブラウザにのみ保存されます。",
+  "Fresh milk, brown sugar syrup": "生乳、黒糖シロップ",
+  "Garlic Green Beans": "いんげんのにんにく炒め",
+  "Garlic Knots (6)": "ガーリックノット（6個）",
+  "Getting started": "導入の流れ",
+  "Green Tea": "緑茶",
+  "Grilled chicken, pickled veg, chili crisp": "グリルチキン、漬け野菜、ラー油",
+  "Ham & Ricotta Calzone": "ハム＆リコッタのカルツォーネ",
+  "Hardware": "機材",
+  "Her ramen arrives. She needs to eat quickly so she still has time to get groceries before her next task.": "ラーメンが届きます。次の予定の前に買い物を済ませるため、急いで食べることになります。",
+  "Hokkaido Ramen Santouka's menu and prices are the real ones carried in FastOrdr for its San Jose store; the customer, the order and the sample stores are examples. Sales tax is 10.000%, the San Jose rate since 1 April 2026 — the 7.25% California base plus Santa Clara County district taxes, which rose 0.625% under Measure A. Confirm the rate for a specific address with the CDTFA lookup before go-live. The tip is shown at 15%. The FastOrdr fee and Stripe's fee are both charged on the full amount charged to the card, tax and tip included.": "北海道ラーメン山頭火のメニューと価格は、サンノゼ店のためにFastOrdrに登録されている実際のものです。お客様、注文、サンプル店舗は例です。売上税は10.000%——2026年4月1日以降のサンノゼの税率で、カリフォルニア州の基本税率7.25%に、Measure Aで0.625%上がったサンタクララ郡の地区税を加えたものです。稼働前に、CDTFAの検索で住所ごとの税率をご確認ください。チップは15%で表示しています。FastOrdr手数料とStripeの手数料は、どちらも税金とチップを含むカード請求額の全額にかかります。",
+  "Home": "ホーム",
+  "Hot": "辛口",
+  "Hot or iced": "ホットまたはアイス",
+  "Hours": "営業時間",
+  "How it works": "使い方",
+  "How would you like it?": "お受け取り方法",
+  "I already have an iPad": "iPadはすでに持っている",
+  "It lands on the kitchen iPad. One tap, the label prints, it's cooking.": "厨房のiPadに届きます。ワンタップでラベルが印刷され、調理が始まります。",
+  "Item labels": "商品ラベル",
+  "Jasmine Green Tea": "ジャスミン緑茶",
+  "Jordan · Pickup": "Jordan・お持ち帰り",
+  "Just starting with online orders, or a handful a day.": "ネット注文を始めたばかり、1日数件のお店に。",
+  "Keep what works.": "今あるものはそのまま。",
+  "Kitchen": "厨房",
+  "Kitchen gets it": "厨房が受け取る",
+  "Kitchen iPad and printer": "厨房のiPadとプリンター",
+  "Kitchen screen": "厨房用の画面",
+  "Labels about $20 a roll": "ラベルは1ロール約20ドル",
+  "Labels only": "ラベルのみ",
+  "Large": "ラージ",
+  "Latte": "ラテ",
+  "Lightly floral, served iced": "ほのかな花の香り、アイスで",
+  "Live": "リアルタイム",
+  "Live demo": "デモ",
+  "Live in an afternoon": "半日で運用開始",
+  "Lowest for you": "この条件で最安",
+  "Mango Slush": "マンゴースラッシュ",
+  "Margherita Pizza": "マルゲリータピザ",
+  "Maria · Pickup": "Maria・お持ち帰り",
+  "Marinated with soy sauce flavor.": "醤油ベースで味付け。",
+  "Medium": "中辛",
+  "Menu": "メニュー",
+  "Mild": "甘口",
+  "Milk": "ミルク",
+  "Month to month.": "契約は月単位。",
+  "Monthly ($)": "月額（＄）",
+  "Mozzarella, ricotta, ham": "モッツァレラ、リコッタ、ハム",
+  "Mushrooms": "マッシュルーム",
+  "Name": "名称",
+  "New": "新規",
+  "New order": "新しい注文",
+  "Next": "次へ",
+  "Next time it's two taps from the Orders tab.": "次回は「注文」タブから2タップで頼めます。",
+  "No contract. Cancel from the dashboard any time.": "縛りはありません。ダッシュボードからいつでも解約できます。",
+  "No new orders. You will hear a chime.": "新しい注文はありません。届くと音でお知らせします。",
+  "No tip": "チップなし",
+  "Nothing selected": "選択なし",
+  "Nothing waiting": "待機中の注文はありません",
+  "Oat milk": "オーツミルク",
+  "One-time hardware": "機材の初期費用",
+  "Online orders a day": "1日のネット注文数",
+  "Online sales per month": "月間のネット売上",
+  "Open {0}": "{0}を開く",
+  "Open · accepting orders": "営業中・注文受付中",
+  "Optional": "任意",
+  "Options and add-ons": "オプションとトッピング",
+  "Order #{0}": "注文 #{0}",
+  "Order again": "もう一度注文",
+  "Orders": "注文",
+  "Orders arrive with a chime, one tap accepts them, and the ticket or label prints on its own.": "注文は音で届き、ワンタップで受注。伝票やラベルは自動で印刷されます。",
+  "Overview": "概要",
+  "Owner": "オーナー",
+  "Owner dashboard": "オーナー用ダッシュボード",
+  "Paid to your bank": "お店の口座への入金",
+  "Pair the iPad": "iPadをつなぐ",
+  "Pan-fried, with black vinegar": "焼き餃子、黒酢添え",
+  "Pay as you go": "従量課金",
+  "Pay per order, pay per month, or a mix": "注文ごと、月額、その組み合わせ",
+  "Pay {0}": "{0}を支払う",
+  "Payments": "売上・入金",
+  "Payments run on Stripe, straight to your account.": "決済はStripeが処理し、そのままお店の口座へ。",
+  "Pays": "支払う",
+  "Pays in the app": "アプリで支払う",
+  "Pepperoni": "ペパロニ",
+  "Per order (%)": "注文ごと（%）",
+  "Per order (¢)": "注文ごと（¢）",
+  "Pick one": "1つ選択",
+  "Picked up": "受け取り済み",
+  "Picked up. Enjoy, {0}!": "お受け取りありがとうございました、{0}さん！",
+  "Picks options": "オプションを選ぶ",
+  "Picks options, like at your counter": "カウンターと同じようにオプションを選ぶ",
+  "Pickup": "お持ち帰り",
+  "Pickup at": "受け取り",
+  "Pickup at {0}": "{0} 受け取り",
+  "Pickup code": "受け取りコード",
+  "Pizza": "ピザ",
+  "Placed": "注文",
+  "Plan": "プラン",
+  "Plans": "料金プラン",
+  "Play": "再生",
+  "Play again": "もう一度再生",
+  "Plus": "プラス",
+  "Plus {0} card processing, the same on every plan — {1} all in": "これにカード決済手数料 {0}（どのプランでも同額）を足して、合計 {1}",
+  "Popcorn Chicken": "ポップコーンチキン",
+  "Popular": "人気メニュー",
+  "Pork Dumplings (6)": "豚餃子（6個）",
+  "Pork.": "豚肉。",
+  "Preparing": "調理中",
+  "Prices, hours, photos and sold-out items, whenever you like.": "価格、営業時間、写真、売り切れ設定を、いつでもお店の判断で。",
+  "Printer connected": "プリンター接続済み",
+  "Prints by itself": "自動で印刷されます",
+  "Prints one sticker per item, with the order number, the name and every option, so each bowl and each drink is labelled and nothing gets mixed up. Wi-Fi.": "注文番号・商品名・オプションまで入ったシールを商品ごとに印刷するので、どの丼もどのドリンクも取り違えません。Wi-Fi接続。",
+  "Prints the one paper receipt for the whole order, for the bag and for the counter. Bluetooth, with an auto-cutter.": "注文全体のレシートを1枚印刷します。袋用にもカウンター用にも。Bluetooth接続、オートカッター付き。",
+  "Pudding": "プリン",
+  "Ramen (real menu)": "ラーメン（実メニュー）",
+  "Ran out of {0}? Flip the switch in the dashboard and it shows as sold out in the app right away. Prices, hours and add-ons work the same way.": "{0}が品切れになったら、ダッシュボードのスイッチを切り替えるだけ。アプリにはすぐ「売り切れ」と表示されます。価格、営業時間、トッピングも同じように変えられます。",
+  "Rate (%)": "料率（%）",
+  "Ready": "準備完了",
+  "Ready by {0}": "{0}までに提供",
+  "Ready for pickup": "受け取り準備完了",
+  "Ready for pickup!": "受け取りの準備ができました！",
+  "Ready in {0} min": "{0}分で提供",
+  "Real mango, blended with ice": "本物のマンゴーを氷とブレンド",
+  "Receipt sent · {0} paid": "レシートを送信・{0} お支払い済み",
+  "Receipts only": "レシートのみ",
+  "Recent orders": "最近の注文",
+  "Regular": "レギュラー",
+  "Reset to the suggested plans": "推奨プランに戻す",
+  "Restaurant": "レストラン",
+  "Roasted pork, scallions, bamboo, mushrooms, sesame": "チャーシュー、ねぎ、メンマ、きのこ、ごま",
+  "Romaine, parmesan, croutons": "ロメインレタス、パルメザン、クルトン",
+  "Sale recorded": "売上が記録される",
+  "Sales": "売上",
+  "Sales tax": "売上税",
+  "Sales tax collected": "お預かりした売上税",
+  "Salt-based tonkotsu broth with pickled plum": "塩ベースの豚骨スープ、梅干し添え",
+  "Sam chooses pickup or dine-in, adds a tip and pays {0} with Apple Pay or a card. Before paying they see pickup at {1}, so they can head off and run errands instead of waiting at your counter.": "Samはお持ち帰りか店内かを選び、チップを加えて、Apple Payまたはカードで {0} を支払います。支払う前に「{1} 受け取り」と表示されるので、カウンターで待たずに用事を済ませに行けます。",
+  "Sam finds your store": "Samがお店を見つける",
+  "Sam opens the FastOrdr app and picks {0}. They see your menu, your prices, and how long pickup takes right now. Tap the {1} to open it.": "SamがFastOrdrアプリを開いて{0}を選びます。メニュー、価格、今の受け取り待ち時間が表示されます。{1}をタップして開いてみてください。",
+  "Same bowl, same twelve minutes of cooking. What changes is where your customer spends them — in your line, or still shopping — and whether one of your cooks is stuck at the register.": "同じ一杯、同じ12分の調理時間。違うのは、お客様がその12分をどこで過ごすか——行列の中か、買い物を続けながらか——そして、調理スタッフの一人がレジに縛られるかどうかです。",
+  "Same crew, same kitchen, same twelve minutes. <b>The register just isn't in the way any more.</b>": "同じ人数、同じ厨房、同じ12分。<b>違うのは、レジがもう邪魔をしないことです。</b>",
+  "Same twelve minutes of cooking — she spent them <b>finishing her shopping</b>, fifty feet away. Nobody left the kitchen to take that order.": "調理時間は同じ12分——お客様はその時間を、すぐ近くで<b>買い物を終えるため</b>に使いました。この注文のために厨房を離れた人は、一人もいません。",
+  "Send your menu": "メニューを送る",
+  "Sent to {0}": "{0}に送信しました",
+  "Settings": "設定",
+  "She comes to the food court on her lunch break. <b>Six people ahead of her.</b>": "昼休みにフードコートへ。<b>前に6人並んでいます。</b>",
+  "She finishes her shopping and goes through checkout.": "買い物を済ませ、レジを通ります。",
+  "She orders from her phone in the produce aisle. Paid. <b>The app says pickup at 12:11.</b>": "野菜売り場でスマホから注文。支払い済み。<b>アプリには「12:11 受け取り」と表示されます。</b>",
+  "She orders, pays, and <b>takes a table to wait</b>, not knowing if she has enough time to buy groceries.": "注文して支払い、<b>席に着いて待ちます</b>。買い物をする時間が残るかどうかは分かりません。",
+  "She walks over, shows her code, and <b>sits down with her ramen and her groceries.</b>": "そのままお店へ。コードを見せて、<b>ラーメンと買い物袋を持って席に着きます。</b>",
+  "Shio Ramen": "塩ラーメン",
+  "Show it on the plan": "表示するプラン",
+  "Show this code at the counter at {0}": "{0}のカウンターでこのコードをお見せください",
+  "Shown in the money breakdown above": "上の内訳に反映されています",
+  "Shows incoming orders and moves them through the queue, upright on the counter or mounted on the wall by the pass. A used iPad 9th generation or newer is all it needs.": "届いた注文を表示し、進行状況を切り替えます。カウンターに立てても、受け渡し口の壁に取り付けても。中古のiPad第9世代以降で十分です。",
+  "Size": "サイズ",
+  "Skip ahead {0} min": "{0}分進める",
+  "Soft egg": "半熟卵",
+  "Sold out": "売り切れ",
+  "Sold out items": "売り切れ商品",
+  "Spice": "辛さ",
+  "Spicy Chicken Rice Bowl": "スパイシーチキン丼",
+  "Spicy Miso Ramen": "辛味噌ラーメン",
+  "Standing in line": "行列に並ぶ",
+  "Star TSP143IIIBI": "Star TSP143IIIBI",
+  "Start over": "最初から",
+  "Steeped for 18 hours": "18時間抽出",
+  "Step {0} of {1}": "ステップ {0} / {1}",
+  "Store name": "店名",
+  "Stripe sends payouts straight to your bank account, usually within two business days. Sales tax is included in the payout for you to file as usual.": "Stripeがお店の銀行口座へ直接入金します。通常2営業日以内です。売上税も入金に含まれるので、申告はこれまで通り行ってください。",
+  "Stripe's {0}% + {1}¢ on the {2} charged.": "カードに請求した {2} に対して、Stripeの{0}% + {1}¢。",
+  "Subtotal": "小計",
+  "Sweetness": "甘さ",
+  "Tap the switch next to {0} and watch the phone.": "{0}のスイッチを切り替えて、スマホの画面をご覧ください。",
+  "Tax rate": "税率",
+  "The iPad chimes and shows the full order, already paid. One tap on Accept tells Sam when it will be ready. Nobody answers a phone or retypes anything.": "iPadが音で知らせ、支払い済みの注文がそのまま表示されます。「受注」をタップすると、Samに提供時刻が伝わります。電話に出る必要も、入力し直す必要もありません。",
+  "The left and right arrow keys also move between steps.": "左右の矢印キーでもステップを移動できます。",
+  "The options and add-ons come straight from your menu, and the price updates with every tap. Santouka sells each pork style as its own bowl, so the only group here is add-ons. Try one, then add it to the bag.": "オプションやトッピングはお店のメニューからそのまま。タップするたびに価格が変わります。山頭火はチャーシューの種類ごとに別の商品として販売しているため、ここでのグループはトッピングだけです。1つ選んでから、カートに入れてみてください。",
+  "The order from the demo — {0} from {1}, for pickup. Both fees below are charged on the full {2}, tax and tip included.": "デモの注文——{1}の{0}、お持ち帰りです。下の手数料はどちらも、税金とチップを含む {2} の全額にかかります。",
+  "The sale shows up in your dashboard": "売上がダッシュボードに表示される",
+  "The ticket prints and you cook": "伝票が印刷され、調理が始まる",
+  "The tip reaches your team in full and the tax is yours to file. Our percentage is worked out on the whole charged amount, tax and tip included — the same base Stripe uses.": "チップは全額スタッフに渡り、税金はお店が申告します。当社の料率は、税金とチップを含むカード請求額の全体で計算します。Stripeと同じ基準です。",
+  "Their orders and contact details belong to your store.": "注文履歴も連絡先も、お店のものです。",
+  "Then each month": "その後の毎月",
+  "These are the only two deductions; nothing else comes out of the $10,000.": "差し引かれるのはこの2つだけで、10,000ドルからほかに引かれるものはありません。",
+  "Thin crust": "薄生地",
+  "Ticket prints": "伝票が印刷される",
+  "Tip": "チップ",
+  "Tip for your team": "スタッフへのチップ",
+  "Tips": "チップ",
+  "Tips and tax pass through to you.": "チップと税金はそのままお店へ。",
+  "Today": "本日",
+  "Tomato, mozzarella, basil": "トマト、モッツァレラ、バジル",
+  "Toppings": "トッピング",
+  "Total": "合計",
+  "Total monthly cost by plan — FastOrdr's fee plus card processing — as online sales grow from $0 to {0} a month": "プラン別の月額合計コスト（FastOrdr手数料＋カード決済手数料）。月間ネット売上0ドルから{0}まで",
+  "Type of store": "業態",
+  "Type the store you're talking to. The whole demo, the receipts and the price examples below update to match.": "商談相手のお店の名前を入力してください。デモも、レシートも、下の価格例もすべてその名前に変わります。",
+  "Typical:": "目安：",
+  "Unlimited": "定額",
+  "Used market price. Paper about $35 for 50 rolls": "中古の相場価格。レシート用紙は50ロールで約35ドル",
+  "Uses: one iPad and a printer": "使うもの：iPad 1台とプリンター",
+  "Uses: the FastOrdr app on their phone": "使うもの：お客様のスマホのFastOrdrアプリ",
+  "Uses: the dashboard on any computer or phone": "使うもの：パソコンやスマホのダッシュボード",
+  "Using the iPad you already have — just the stand to buy.": "お持ちのiPadを使います——買うのはスタンドだけ。",
+  "Vanilla syrup": "バニラシロップ",
+  "Waiting for the kitchen to accept. Usually under a minute.": "厨房の受注待ちです。通常1分もかかりません。",
+  "We turn it into your app menu with sizes and add-ons. You fix any price and approve it.": "サイズやトッピングも含めて、アプリのメニューに仕上げます。価格を直していただき、承認するだけです。",
+  "What each plan costs you in total every month as online sales grow — our fee <b>and</b> Stripe's card processing together, because both come out of the same money. The horizontal axis is food and drink; both percentages are worked out on that plus tax and tip. Hover or drag across the chart to read any point, including how much of it is card processing.": "ネット売上が増えたときに毎月いくらかかるかを、プラン別に示しています——当社の手数料<b>と</b>Stripeのカード決済手数料を合わせた金額です。どちらも同じお金から出ていくためです。横軸は商品代金で、どちらの料率も、そこに税金とチップを足した額で計算しています。グラフ上をなぞると、カード決済手数料の内訳を含め、任意の地点の数字が読めます。",
+  "What we take out of $10,000": "10,000ドルから当社が受け取る額",
+  "When the timer is up, Sam's app says the order is ready and shows the pickup code. Staff check the code, hand over the bag and tap Done.": "タイマーが終わると、Samのアプリに「準備完了」と受け取りコードが表示されます。スタッフはコードを確認して袋を渡し、「完了」をタップします。",
+  "Where {0}'s {1} goes": "{0}さんが支払った {1} の行き先",
+  "Whole milk": "牛乳",
+  "Why it helps": "導入する理由",
+  "With marinara": "マリナーラソース付き",
+  "With the app": "アプリで注文",
+  "Wok-fried with garlic": "にんにくと強火で炒めて",
+  "Worked example": "計算例",
+  "You buy the hardware and own it — no rental, no lease. A compatible used iPad with a stand comes to about $150, and both printers are worth having: the Brother labels each individual item, the Star prints the customer receipt. <b>We can supply the whole kit at these prices</b>, tested and paired before it reaches you, so there is nothing for you to shop for.": "機材は買い取りで、お店の所有になります。レンタルもリースもありません。対応する中古iPadとスタンドで約150ドル。プリンターは2台とも用意する価値があります——Brotherが商品ごとのラベル、Starがお客様用レシートです。<b>一式をこの価格のままお渡しできます</b>。動作確認とペアリングを済ませてお届けするので、お店で探していただくものはありません。",
+  "You control the menu": "メニューは店主の自由",
+  "You keep from the sale": "この売上でお店に残る金額",
+  "You set the menu.": "メニューを決めるのはお店。",
+  "You stay in control of the menu": "メニューは最後までお店の手の中",
+  "You, the owner": "オーナーのあなた",
+  "Your POS, your counter and your delivery-app listing all stay.": "今のPOSも、カウンターも、デリバリーアプリの掲載もそのままで構いません。",
+  "Your bag": "カート",
+  "Your customers": "お客様",
+  "Your customers stay yours.": "お客様はお店のお客様のまま。",
+  "Your kitchen": "厨房",
+  "Your kitchen gets it": "厨房が注文を受け取る",
+  "Your money": "お金の流れ",
+  "Your month": "ひと月あたり",
+  "Your own online ordering, from the customer's phone to your counter.": "お客様のスマホからカウンターまで、お店専用のモバイルオーダー。",
+  "Your quickest cook spent that rush <b>at the register</b>, and a table sat full of somebody who wasn't eating yet.": "一番手の早い調理スタッフが、その昼のピークを<b>レジで</b>過ごしました。席も、まだ食べていないお客様で埋まったままです。",
+  "Your sales": "現在の売上",
+  "about ${0}": "約${0}",
+  "and": "と",
+  "from {0}": "{0}〜",
+  "iPad and stand": "iPadとスタンド",
+  "iPads": "iPad",
+  "just now": "たった今",
+  "labels about $20 a roll": "ラベル1ロール約20ドル",
+  "of the $10,000 charged": "請求した10,000ドルに占める割合",
+  "one time": "初回のみ",
+  "sweet": "甘さ",
+  "ticket paper about $35 for 50 rolls": "レシート用紙50ロールで約35ドル",
+  "{0} costs less than {1} once online sales pass {2} a month, about {3} orders a day at your average.": "月のネット売上が {2} を超えると、{0}の方が{1}より安くなります。平均単価では1日あたり約{3}件です。",
+  "{0} items · PROMISED {1}": "{0}点・提供予定 {1}",
+  "{0} now shows as sold out in the app. Flip it back when it's restocked.": "{0}はアプリで売り切れと表示されています。入荷したら戻してください。",
+  "{0} of the $10,000": "10,000ドルのうち {0}",
+  "{0} on {1} at your volume, plus card processing on each order": "この売上規模なら{1}で {0}。これに注文ごとのカード決済手数料",
+  "{0} paid": "{0}さんのお支払い",
+  "{0} sales · {1} orders": "売上 {0}・注文 {1}件",
+  "{0} · Pickup": "{0}・お持ち帰り",
+  "{0} · Pickup · 12:30 PM": "{0}・お持ち帰り・12:30 PM",
+  "{0} · Pickup · paid {1}": "{0}・お持ち帰り・{1} お支払い済み",
+  "{0} · paid": "{0}・支払い済み",
+  "{0} · {1} items": "{0}・{1}点",
+  "{0}% of each order's total": "注文総額の{0}%",
+  "{0}% of the full {1}": "{1} 全額の{0}%",
+  "~{0} min": "約{0}分",
+  "· about ${0}": "・約${0}",
+  "· paid {0}": "・{0} お支払い済み",
+  "· {0}/day · ${1}": "・1日{0}件・${1}",
+  "— the sales tax and the tip are part of that figure, the same way Stripe charges on it.": "——売上税とチップもその金額に含まれます。Stripeの請求基準と同じです。",
+};
+
+const chartBox = $('#chart');
+chartBox.addEventListener('pointermove', chartHover);
+chartBox.addEventListener('pointerdown', chartHover);
+chartBox.addEventListener('pointerleave', chartLeave);
+let lastW = 0;
+if ('ResizeObserver' in window) new ResizeObserver(() => { const w = chartBox.clientWidth; if (Math.abs(w - lastW) > 4) { lastW = w; renderChart(); } }).observe(chartBox);
+
+resetType();
+$$('#langSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+applyStatic();
+renderAll();
+renderPlain();
+})();
+</script>
+
+</body></html>
