@@ -385,6 +385,19 @@ button.a-item{cursor:pointer}
 .keep-callout .v{font-size:40px;font-weight:800;line-height:1;color:var(--keep);font-variant-numeric:tabular-nums}
 .keep-callout p{color:var(--ink-2)}
 .money-plan{margin-top:6px}
+/* The payment methods the store's customers actually see at checkout. Stripe
+   decides the per-customer subset from the account's enabled methods; this is
+   the US list, which is the only one that matters to these stores. */
+.payways{margin-top:36px;padding-top:28px;border-top:1px solid var(--line)}
+.payways h3{font-size:21px;letter-spacing:-.01em}
+.payways>p{color:var(--ink-2);font-size:16.5px;margin-top:8px;max-width:70ch}
+.pay-list{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(218px,1fr));gap:10px}
+.pay-list li{padding:13px 15px;border-radius:13px;background:var(--surface);border:1px solid var(--line);display:grid;gap:3px;align-content:start}
+.pay-list b{font-size:15px}
+.pay-list span{font-size:13.5px;color:var(--muted);line-height:1.45}
+.pay-note{margin-top:15px;font-size:14px;color:var(--muted);max-width:78ch}
+.pay-note+.pay-note{margin-top:7px}
+@media (max-width:720px){.pay-list{grid-template-columns:1fr}}
 
 /* Pricing */
 .calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 28px;padding:18px 20px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
@@ -732,6 +745,22 @@ footer .wrap{padding-block:24px 40px;font-size:12.5px;color:var(--muted);display
         <div class="mrows" id="moneyRows"></div>
       </div>
       <div class="keep-callout" id="keepCallout"></div>
+    </div>
+
+    <div class="payways">
+      <h3 data-t>What your customers can pay with</h3>
+      <p data-t>Whatever is already on their phone. Stripe shows each customer only the ones they can actually use, so nobody gives up halfway through paying.</p>
+      <ul class="pay-list">
+        <li><b data-t>Cards</b><span data-t>Visa, Mastercard, American Express, Discover, JCB, Diners Club and UnionPay.</span></li>
+        <li><b data-t>Apple Pay</b><span data-t>Face ID and it is done — no card number typed at all.</span></li>
+        <li><b data-t>Link</b><span data-t>One tap for anyone who has paid at another Stripe store before.</span></li>
+        <li><b data-t>Cash App Pay</b><span data-t>Confirm it in Cash App. Common with younger customers.</span></li>
+        <li><b data-t>Amazon Pay</b><span data-t>Uses the card already saved in their Amazon account.</span></li>
+        <li><b data-t>Klarna</b><span data-t>Splits a bigger order into instalments. You are still paid in full.</span></li>
+        <li><b data-t>Affirm</b><span data-t>The same idea on a large basket — a catering run, a big group order.</span></li>
+      </ul>
+      <p class="pay-note" data-t>The first five cost you the same 2.9% + 30¢ used in the numbers above. Klarna and Affirm cost Stripe more to run, so they carry a higher rate and are not in those numbers — they are worth keeping for catering, and worth switching off if you would rather not offer them at all.</p>
+      <p class="pay-note" data-t>Card numbers go straight to Stripe. They never touch your iPad, your printer or your staff, so none of this is yours to keep safe.</p>
     </div>
   </div>
 </section>
@@ -1692,6 +1721,18 @@ $('#hardware').addEventListener('change', e => {
    interpolated values in source order. Prices, times and store names are left
    to flow through untouched. */
 const JA = {
+  "What your customers can pay with": "お客様のお支払い方法",
+  "Whatever is already on their phone. Stripe shows each customer only the ones they can actually use, so nobody gives up halfway through paying.": "お客様のスマホにすでに入っている方法で支払えます。Stripe がそのお客様の実際に使える方法だけを表示するので、支払いの途中で離脱されません。",
+  "Cards": "カード",
+  "Visa, Mastercard, American Express, Discover, JCB, Diners Club and UnionPay.": "Visa、Mastercard、American Express、Discover、JCB、Diners Club、UnionPay。",
+  "Face ID and it is done — no card number typed at all.": "Face ID で完了。カード番号の入力は一切不要です。",
+  "One tap for anyone who has paid at another Stripe store before.": "Stripe を使う他のお店で支払ったことがあるお客様なら、ワンタップで完了します。",
+  "Confirm it in Cash App. Common with younger customers.": "Cash App で承認するだけ。若い世代のお客様によく使われています。",
+  "Uses the card already saved in their Amazon account.": "Amazon アカウントに登録済みのカードで支払えます。",
+  "Splits a bigger order into instalments. You are still paid in full.": "大口の注文を分割払いにできます。お店には全額が支払われます。",
+  "The same idea on a large basket — a catering run, a big group order.": "大口の買い物向けの同じ仕組みです。ケータリングや大人数の注文に。",
+  "The first five cost you the same 2.9% + 30¢ used in the numbers above. Klarna and Affirm cost Stripe more to run, so they carry a higher rate and are not in those numbers — they are worth keeping for catering, and worth switching off if you would rather not offer them at all.": "上の5つはいずれも、上の計算で使っている 2.9% ＋ 30¢ と同じ手数料です。Klarna と Affirm は Stripe 側のコストが高く、手数料率も高いため、上の計算には含めていません。ケータリング向けに残しておく価値はありますが、不要ならオフにしても構いません。",
+  "Card numbers go straight to Stripe. They never touch your iPad, your printer or your staff, so none of this is yours to keep safe.": "カード番号は Stripe に直接送られます。お店の iPad にもプリンターにもスタッフにも渡らないので、お店が守るべきものはありません。",
   "$0 on this order. The {0} plan is a flat ${1} a month, whatever the order total.": "この注文では0ドルです。{0}プランは注文額にかかわらず月額 ${1} の定額です。",
   "$10,000 here is the amount actually <b>charged to cards</b>, and our percentage is charged on all of it — food, sales tax and tip together. At {0}'s {1}% sales tax and a {2}% tip, that $10,000 breaks down as about <b>{3}</b> of food and drink, {4} of sales tax and {5} of tips, across roughly {6} orders of {7} each.": "ここでの10,000ドルは、実際に<b>カードへ請求した金額</b>です。当社の料率は、商品代金・売上税・チップを合わせたその全額にかかります。{0}の売上税{1}%、チップ{2}%で計算すると、内訳は商品代金が約<b>{3}</b>、売上税が{4}、チップが{5}。1件あたり{7}の注文、およそ{6}件分です。",
   ", no per-order fee": "、注文ごとの手数料なし",
