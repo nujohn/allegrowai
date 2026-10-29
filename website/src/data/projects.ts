@@ -69,6 +69,33 @@ export const projects: Project[] = [
     platform: 'iOS · iPad · Web · Payments',
   },
   {
+    slug: 'fastordr',
+    name: 'FastOrdr',
+    tagline: 'Order-ahead for restaurants \u2014 with a demo an owner can click through before they decide.',
+    description:
+      `FastOrdr gives a restaurant its own ordering for pickup and dine-in: the customer orders and pays from their phone, the kitchen gets it on an iPad that prints a label for every item and one receipt for the bag, and the owner watches the money and edits the menu from one dashboard. The link below is the real thing to look at \u2014 an interactive walkthrough that follows a single order across all three screens at once, then works out what it would cost on the owner's own sales. It runs in English and Japanese.`,
+    tags: ['Ordering', 'Restaurants', 'iOS + iPad'],
+    strengths: [
+      'An interactive demo an owner drives themselves: one order from phone to kitchen screen to printed ticket to dashboard',
+      'Pickup and dine-in \u2014 the customer, the menu, and the whole ticket stay with the restaurant instead of a delivery marketplace',
+      'Honest arithmetic on their own numbers: three plans, card processing counted in, no commission per order and no contract',
+      'English and Japanese from one toggle \u2014 every screen, down to the phone and the kitchen iPad',
+    ],
+    url: 'https://allegrowai.com/fastordr/',
+    urlLabel: 'allegrowai.com/fastordr',
+    ctaLabel: 'Open the interactive demo',
+    screenshot: '/screenshots/fastordr-demo-stage.png',
+    screenshotAlt: 'FastOrdr demo showing one order at once on the customer phone, the kitchen iPad and the owner dashboard',
+    gallery: [
+      { src: '/screenshots/fastordr-timelines.png', alt: 'Two timelines of the same lunch \u2014 standing in line versus ordering from the app', label: 'Why it helps', mode: 'wide', section: 'The walkthrough' },
+      { src: '/screenshots/fastordr-japanese.png', alt: 'The same demo screen rendered in Japanese', label: 'Japanese', mode: 'wide', section: 'The walkthrough' },
+      { src: '/screenshots/fastordr-plans.png', alt: 'Three pricing plans with a worked example of what is taken out of $10,000', label: 'What it costs', mode: 'wide', section: 'The numbers' },
+      { src: '/screenshots/fastordr-chart.png', alt: 'Chart of total monthly cost per plan as online sales grow, card processing included', label: 'Cost as you grow', mode: 'wide', section: 'The numbers' },
+      { src: '/screenshots/fastordr-hardware.png', alt: 'Hardware list: iPad and stand, Brother label printer and Star receipt printer, about $520 one time', label: 'Hardware', mode: 'wide', section: 'The numbers' },
+    ],
+    platform: 'iOS \u00b7 iPad \u00b7 Web \u00b7 Payments',
+  },
+  {
     slug: 'clockracer',
     name: 'ClockRacer',
     tagline: 'A game that teaches kids to read an analog clock — against the clock.',

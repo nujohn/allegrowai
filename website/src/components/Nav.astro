@@ -9,6 +9,7 @@
     <div class="nav-links">
       <a href="#capabilities" class="nav-link">What we build</a>
       <a href="#work" class="nav-link">Work</a>
+      <a href="/fastordr/" class="nav-link nav-link--demo">FastOrdr demo</a>
       <a href="#contact" class="nav-link">Contact</a>
     </div>
   </nav>
@@ -81,6 +82,16 @@
   }
   .nav-link:hover {
     color: var(--color-text);
+  }
+
+  /* The only link here that opens a live, clickable product rather than
+     scrolling the page — given the accent so it reads as an invitation. */
+  .nav-link--demo {
+    color: var(--color-accent);
+  }
+  .nav-link--demo:hover {
+    color: var(--color-accent);
+    opacity: 0.8;
   }
 </style>
 
