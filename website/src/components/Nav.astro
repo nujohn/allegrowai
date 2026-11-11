@@ -7,9 +7,10 @@
       <span class="logo-word">Allegrow</span><span class="logo-accent">AI</span>
     </a>
     <div class="nav-links">
-      <a href="#capabilities" class="nav-link">What we build</a>
-      <a href="#work" class="nav-link">Work</a>
-      <a href="/fastordr/" class="nav-link nav-link--demo">FastOrdr demo</a>
+      <a href="#capabilities" class="nav-link nav-link--wide-only">What we build</a>
+      <a href="#work" class="nav-link">iOS apps</a>
+      <a href="#web" class="nav-link nav-link--wide-only">Web</a>
+      <a href="/fastordr/" class="nav-link nav-link--demo nav-link--tablet-up">FastOrdr demo</a>
       <a href="#contact" class="nav-link">Contact</a>
     </div>
   </nav>
@@ -92,6 +93,29 @@
   .nav-link--demo:hover {
     color: var(--color-accent);
     opacity: 0.8;
+  }
+  .nav-link {
+    white-space: nowrap;
+  }
+
+  /* Narrow screens: keep the nav on one line by dropping the links that the
+     page itself already leads to. */
+  @media (max-width: 760px) {
+    .nav-inner {
+      padding: 0 1rem;
+    }
+    .nav-links {
+      gap: 1.25rem;
+    }
+    .nav-link--wide-only {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .nav-link--tablet-up {
+      display: none;
+    }
   }
 </style>
 

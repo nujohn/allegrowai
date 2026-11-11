@@ -14,6 +14,7 @@ const { project, reverse = false, index } = Astro.props;
 // small heading (e.g. "iPhone app" / "On the web") so a project that
 // ships on multiple surfaces reads as clearly separated sets rather
 // than one undifferentiated grid.
+const links = project.links ?? [];
 type GalleryItem = NonNullable<typeof project.gallery>[number];
 const gallery = project.gallery ?? [];
 const hasSections = gallery.some((g) => g.section);
@@ -34,16 +35,26 @@ for (const item of gallery) {
         {project.tags.map((tag) => (
           <span class="tag">{tag}</span>
         ))}
-        {project.platform && (
-          <span class="tag tag--platform">{project.platform}</span>
-        )}
       </div>
 
-      <span class="project-feature__number">0{index + 1}</span>
+      <span class="project-feature__number">{String(index + 1).padStart(2, '0')}</span>
 
       <h2 class="project-feature__name">{project.name}</h2>
+      <div class={`status-pill status-pill--${project.status.tone}`}>
+        <span class="status-pill__dot" aria-hidden="true"></span>
+        <span>{project.status.label}</span>
+      </div>
       <p class="project-feature__tagline">{project.tagline}</p>
       <p class="project-feature__description">{project.description}</p>
+
+      <ul class="platform-list" aria-label={`${project.name} platforms`}>
+        {project.platforms.map((p) => (
+          <li class={`platform platform--${p.tone}`}>
+            <span class="platform__name">{p.name}</span>
+            <span class="platform__state">{p.state}</span>
+          </li>
+        ))}
+      </ul>
 
       <ul class="project-feature__strengths">
         {project.strengths.map((s) => (
@@ -54,20 +65,34 @@ for (const item of gallery) {
         ))}
       </ul>
 
-      {project.url && project.urlLabel ? (
-        <a
-          href={project.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="project-feature__cta"
-        >
-          <span>{project.ctaLabel ?? `Visit ${project.urlLabel}`}</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
+      {links.length > 0 ? (
+        <div class="project-feature__links">
+          {links.map((link, i) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class={`project-feature__cta ${i === 0 ? 'project-feature__cta--primary' : ''}`}
+            >
+              {(link.kind === 'appstore' || link.kind === 'testflight' || link.kind === 'android') ? (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 2.5v8M4.5 7.5 8 11l3.5-3.5M3 13.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              ) : null}
+              <span>{link.label}</span>
+              {(link.kind === 'web' || link.kind === 'demo') ? (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              ) : null}
+            </a>
+          ))}
+        </div>
       ) : (
-        <div class="project-feature__status">Live product — ask us for a walkthrough.</div>
+        <div class="project-feature__status">{project.note ?? 'Walkthrough on request.'}</div>
+      )}
+      {links.length > 0 && project.note && (
+        <p class="project-feature__note">{project.note}</p>
       )}
     </div>
 
@@ -276,6 +301,89 @@ for (const item of gallery) {
   }
   .project-feature__cta:hover svg {
     transform: translateX(3px);
+  }
+
+  /* Status — one colour per tone: live (shipped, public), beta (TestFlight /
+     tester builds), dev (built, not released). */
+  .project-feature {
+    --tone-live: #6fcf97;
+    --tone-beta: #f0b44c;
+    --tone-dev: #9e9690;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.25rem 0 1rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid currentColor;
+    background: color-mix(in srgb, currentColor 10%, transparent);
+  }
+  .status-pill__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .status-pill--live { color: var(--tone-live); }
+  .status-pill--beta { color: var(--tone-beta); }
+  .status-pill--dev  { color: var(--tone-dev); }
+
+  .platform-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .platform {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.82rem;
+    line-height: 1.2;
+  }
+  .platform__name {
+    padding: 0.4rem 0.6rem;
+    font-weight: 600;
+    color: var(--color-text);
+    background: var(--color-surface-2);
+  }
+  .platform__state {
+    padding: 0.4rem 0.6rem;
+    font-weight: 500;
+  }
+  .platform--live .platform__state { color: var(--tone-live); }
+  .platform--beta .platform__state { color: var(--tone-beta); }
+  .platform--dev  .platform__state { color: var(--tone-dev); }
+
+  .project-feature__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .project-feature__cta--primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+  .project-feature__cta--primary:hover {
+    background: #d4743f;
+    border-color: #d4743f;
+    color: #fff;
+  }
+  .project-feature__note {
+    margin: 0.85rem 0 0;
+    font-size: 0.9rem;
+    color: var(--color-muted);
   }
 
   .project-feature__status {
