@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import ProjectFeature from '../components/ProjectFeature.astro';
+import Lightbox from '../components/Lightbox.astro';
 import { iosApps, webProjects } from '../data/projects';
 
 const capabilities = [
@@ -205,15 +206,17 @@ const capabilities = [
   </section>
 
   <Footer />
+  <Lightbox />
 </Base>
 
 <style>
+  /* Sized to its content rather than the full viewport, so the first app
+     starts within a scroll on desktop. */
   .hero {
     position: relative;
-    min-height: 100svh;
     display: flex;
     align-items: center;
-    padding: 8rem 0 5rem;
+    padding: 7rem 0 3.5rem;
     overflow: hidden;
   }
 
@@ -260,8 +263,8 @@ const capabilities = [
   }
 
   .hero-headline {
-    margin: 1.25rem 0 1.25rem;
-    font-size: clamp(3.3rem, 8vw, 6.8rem);
+    margin: 1rem 0 1.1rem;
+    font-size: clamp(2.6rem, 6vw, 5rem);
     line-height: 0.95;
     letter-spacing: -0.05em;
   }
@@ -276,9 +279,9 @@ const capabilities = [
   .hero-sub {
     max-width: 56ch;
     font-size: clamp(1.02rem, 1.8vw, 1.18rem);
-    line-height: 1.85;
+    line-height: 1.7;
     color: #b7b0aa;
-    margin: 0 0 2rem;
+    margin: 0 0 1.75rem;
   }
 
   .hero-cta-row {
@@ -427,7 +430,7 @@ const capabilities = [
 
   .capabilities-section,
   .approach-section {
-    padding: 2rem 0 6rem;
+    padding: 1rem 0 4rem;
   }
 
   .capabilities-head,
@@ -439,16 +442,17 @@ const capabilities = [
   .capabilities-head h2,
   .work-header h2,
   .approach-inner h2 {
-    margin: 1rem 0;
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    margin: 0.75rem 0;
+    font-size: clamp(1.8rem, 3.4vw, 2.8rem);
   }
 
   .capabilities-head p,
   .work-header p,
   .approach-lead {
     color: #b7b0aa;
-    line-height: 1.85;
-    font-size: 1.04rem;
+    line-height: 1.7;
+    font-size: 1.02rem;
+    margin: 0;
   }
 
   .capabilities-grid {
@@ -481,7 +485,7 @@ const capabilities = [
   }
 
   .work-section {
-    padding: 2rem 0 3rem;
+    padding: 1.5rem 0 1rem;
   }
 
   .principles-grid {
@@ -506,7 +510,7 @@ const capabilities = [
   }
 
   .contact-section {
-    padding: 2rem 0 6rem;
+    padding: 1.5rem 0 4.5rem;
   }
 
   .contact-inner {
@@ -537,7 +541,15 @@ const capabilities = [
     }
 
     .hero {
-      padding-top: 7rem;
+      padding-top: 6rem;
+    }
+
+    .hero-proof-card {
+      padding: 1.25rem;
+    }
+
+    .proof-list {
+      gap: 0.7rem;
     }
 
     .section-shell,

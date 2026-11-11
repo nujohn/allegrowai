@@ -1,0 +1,181 @@
+---
+// One shared full-size viewer for every screenshot marked `.zoomable`
+// (data-zoom-src / -alt / -caption / -group). Arrows step through the
+// screenshots of the same project; Esc, the close button, or a click on
+// the backdrop closes it.
+---
+
+<dialog class="lightbox" aria-label="Screenshot viewer">
+  <button type="button" class="lightbox__btn lightbox__close" aria-label="Close">
+    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <button type="button" class="lightbox__btn lightbox__nav lightbox__prev" aria-label="Previous screenshot">
+    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" alt="" />
+    <figcaption class="lightbox__caption"></figcaption>
+  </figure>
+  <button type="button" class="lightbox__btn lightbox__nav lightbox__next" aria-label="Next screenshot">
+    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</dialog>
+
+<style>
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: rgba(10, 9, 8, 0.94);
+    color: var(--color-text);
+  }
+  .lightbox[open] {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
+    align-items: center;
+  }
+  .lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .lightbox__figure {
+    grid-column: 2;
+    margin: 0;
+    height: 100dvh;
+    padding: 3.5rem 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+  .lightbox__img {
+    max-width: 100%;
+    max-height: calc(100dvh - 7rem);
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  }
+  .lightbox__caption {
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent-gold);
+    text-align: center;
+  }
+
+  .lightbox__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: rgba(28, 26, 24, 0.85);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+  .lightbox__btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+  .lightbox__btn[hidden] {
+    display: none;
+  }
+  .lightbox__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1;
+  }
+  .lightbox__prev {
+    grid-column: 1;
+    justify-self: center;
+  }
+  .lightbox__next {
+    grid-column: 3;
+    justify-self: center;
+  }
+
+  @media (max-width: 640px) {
+    .lightbox[open] {
+      grid-template-columns: 0 minmax(0, 1fr) 0;
+    }
+    .lightbox__figure {
+      padding: 3.75rem 0.75rem 4.5rem;
+    }
+    .lightbox__img {
+      max-height: calc(100dvh - 10rem);
+    }
+    /* Arrows move to the bottom corners, within thumb reach. */
+    .lightbox__nav {
+      position: absolute;
+      bottom: 1rem;
+    }
+    .lightbox__prev { left: 1rem; }
+    .lightbox__next { right: 1rem; }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('.lightbox');
+  if (dialog) {
+    const img = dialog.querySelector<HTMLImageElement>('.lightbox__img')!;
+    const caption = dialog.querySelector<HTMLElement>('.lightbox__caption')!;
+    const prev = dialog.querySelector<HTMLButtonElement>('.lightbox__prev')!;
+    const next = dialog.querySelector<HTMLButtonElement>('.lightbox__next')!;
+    let items: HTMLElement[] = [];
+    let index = 0;
+
+    const show = (i: number) => {
+      index = (i + items.length) % items.length;
+      const el = items[index];
+      img.src = el.dataset.zoomSrc ?? '';
+      img.alt = el.dataset.zoomAlt ?? '';
+      caption.textContent = el.dataset.zoomCaption ?? '';
+      const many = items.length > 1;
+      prev.hidden = !many;
+      next.hidden = !many;
+    };
+
+    document.addEventListener('click', (event) => {
+      const trigger = (event.target as Element).closest<HTMLElement>('.zoomable[data-zoom-src]');
+      if (!trigger) return;
+      const group = trigger.dataset.zoomGroup;
+      items = Array.from(document.querySelectorAll<HTMLElement>('.zoomable[data-zoom-src]'))
+        .filter((el) => el.dataset.zoomGroup === group);
+      show(items.indexOf(trigger));
+      dialog.showModal();
+    });
+
+    prev.addEventListener('click', () => show(index - 1));
+    next.addEventListener('click', () => show(index + 1));
+    dialog.querySelector('.lightbox__close')!.addEventListener('click', () => dialog.close());
+    // A click on the dark area (not the image or a button) closes.
+    dialog.addEventListener('click', (event) => {
+      const target = event.target as Element;
+      if (target === dialog || target.classList.contains('lightbox__figure')) dialog.close();
+    });
+    dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') show(index - 1);
+      if (event.key === 'ArrowRight') show(index + 1);
+    });
+    // Swipe left/right on touch screens.
+    let startX: number | null = null;
+    dialog.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+    dialog.addEventListener('touchend', (e) => {
+      if (startX === null || items.length < 2) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+      startX = null;
+    });
+    dialog.addEventListener('close', () => { img.removeAttribute('src'); });
+  }
+</script>

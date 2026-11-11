@@ -89,6 +89,11 @@ export const projects: Project[] = [
       { src: '/screenshots/bobahub-ios-orders.png', alt: 'BobaHub iOS app order history with reorder', label: 'Orders', mode: 'portrait', section: 'iPhone app' },
       { src: '/screenshots/bobahub-ios-loyalty.png', alt: 'BobaHub iOS app loyalty rewards progress', label: 'Rewards', mode: 'portrait', section: 'iPhone app' },
       { src: '/screenshots/bobahub-ios-profile.png', alt: 'BobaHub iOS app account profile', label: 'Profile', mode: 'portrait', section: 'iPhone app' },
+      // Mobile web storefront.
+      { src: '/screenshots/bobahub-web-home-2.png', alt: 'BobaHub web app home with featured drink', label: 'Home', mode: 'portrait', section: 'On the web' },
+      { src: '/screenshots/bobahub-web-menu-2.png', alt: 'BobaHub web app menu with real drink photos and prices', label: 'Menu', mode: 'portrait', section: 'On the web' },
+      { src: '/screenshots/bobahub-web-detail-2.png', alt: 'BobaHub web app drink customization with ice, sugar, and toppings', label: 'Customize', mode: 'portrait', section: 'On the web' },
+      { src: '/screenshots/bobahub-web-checkout-2.png', alt: 'BobaHub web app checkout with pickup time and payment', label: 'Checkout', mode: 'portrait', section: 'On the web' },
       // iPad counter app for staff.
       { src: '/screenshots/bobahub-store-board.png', alt: 'BobaHub iPad counter app order board with New, Preparing, and Ready columns', label: 'Order board', mode: 'wide', section: 'iPad counter' },
       // Admin console (per-store web back office).
@@ -97,11 +102,6 @@ export const projects: Project[] = [
       { src: '/screenshots/bobahub-admin-settings.png', alt: 'BobaHub admin store settings with tax rate and cancel window', label: 'Settings', mode: 'wide', section: 'Admin console' },
       { src: '/screenshots/bobahub-admin-funnel.png', alt: 'BobaHub admin analytics funnel with daily event counts', label: 'Analytics', mode: 'wide', section: 'Admin console' },
       { src: '/screenshots/bobahub-admin-featured.png', alt: 'BobaHub admin featured-drink merchandising editor', label: 'Featured drink', mode: 'wide', section: 'Admin console' },
-      // Mobile web storefront.
-      { src: '/screenshots/bobahub-web-home-2.png', alt: 'BobaHub web app home with featured drink', label: 'Home', mode: 'portrait', section: 'On the web' },
-      { src: '/screenshots/bobahub-web-menu-2.png', alt: 'BobaHub web app menu with real drink photos and prices', label: 'Menu', mode: 'portrait', section: 'On the web' },
-      { src: '/screenshots/bobahub-web-detail-2.png', alt: 'BobaHub web app drink customization with ice, sugar, and toppings', label: 'Customize', mode: 'portrait', section: 'On the web' },
-      { src: '/screenshots/bobahub-web-checkout-2.png', alt: 'BobaHub web app checkout with pickup time and payment', label: 'Checkout', mode: 'portrait', section: 'On the web' },
     ],
   },
   {
