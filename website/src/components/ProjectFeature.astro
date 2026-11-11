@@ -177,7 +177,9 @@ for (const item of gallery) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
-    align-items: center;
+    /* Top-aligned: the image column runs long (hero + gallery), and centring
+       the text against it left a screen of empty space above the name. */
+    align-items: start;
   }
 
   .project-feature--reverse .project-feature__inner {
