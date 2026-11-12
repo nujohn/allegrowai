@@ -77,9 +77,7 @@ export const projects: Project[] = [
     links: [
       { label: 'Download on the App Store', url: 'https://apps.apple.com/us/app/teatop-usa/id6768713041', kind: 'appstore' },
       { label: 'Order on the web', url: 'https://order.bobahub.app', kind: 'web' },
-      { label: 'Admin console', url: 'https://admin.bobahub.app/login', kind: 'web' },
     ],
-    urlLabel: 'admin.bobahub.app',
     heroMode: 'phone',
     screenshot: '/screenshots/bobahub-ios-home.png',
     screenshotAlt: 'BobaHub consumer iPhone app home screen with featured drink',
