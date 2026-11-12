@@ -22,6 +22,8 @@ export interface Project {
   category: 'ios' | 'web';
   name: string;
   tagline: string;
+  // Short one-liner shown under the name in the hero card ("Ideas we've brought to life").
+  pitch?: string;
   // One-line headline status shown under the name and in the hero card.
   status: { label: string; tone: StatusTone };
   platforms: PlatformStatus[];
@@ -55,6 +57,7 @@ export const projects: Project[] = [
     category: 'ios',
     name: 'BobaHub',
     tagline: 'Order-ahead, payments, and a counter system for a real bubble-tea chain.',
+    pitch: 'Order ahead, Apple Pay and rewards for a bubble tea shop',
     status: { label: 'On the App Store', tone: 'live' },
     platforms: [
       { name: 'iPhone', state: 'App Store', tone: 'live' },
@@ -109,6 +112,7 @@ export const projects: Project[] = [
     category: 'ios',
     name: 'WhatToGet',
     tagline: 'Shopping lists that know your stores, and nudge you when you walk past one.',
+    pitch: 'Snap a handwritten list, get nudged near the right store',
     status: { label: 'TestFlight beta · real testers', tone: 'beta' },
     platforms: [
       { name: 'iPhone', state: 'TestFlight beta', tone: 'beta' },
@@ -146,6 +150,7 @@ export const projects: Project[] = [
     category: 'ios',
     name: 'Moodie Diary',
     tagline: 'A private journal you can talk to in English or Mandarin, with AI that stays on hardware you own.',
+    pitch: 'A bilingual voice journal with private AI summaries',
     status: { label: 'Private TestFlight beta', tone: 'beta' },
     platforms: [
       { name: 'iPhone', state: 'TestFlight beta', tone: 'beta' },
@@ -181,6 +186,7 @@ export const projects: Project[] = [
     category: 'ios',
     name: 'FastOrdr',
     tagline: 'Order-ahead for restaurants, with a demo an owner can click through before they decide.',
+    pitch: 'Restaurant order-ahead, from the phone to the kitchen iPad',
     status: { label: 'Interactive demo · pre-launch', tone: 'dev' },
     platforms: [
       { name: 'iPhone', state: 'Built · pre-launch', tone: 'dev' },
@@ -215,6 +221,7 @@ export const projects: Project[] = [
     category: 'ios',
     name: 'ClockRacer',
     tagline: 'A game that teaches kids to read an analog clock, against the clock.',
+    pitch: 'Kids learn to read a clock by racing it',
     status: { label: 'Live on the web · iPhone in TestFlight', tone: 'live' },
     platforms: [
       { name: 'Web', state: 'Live', tone: 'live' },

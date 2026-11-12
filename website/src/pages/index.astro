@@ -59,6 +59,7 @@ const capabilities = [
           {iosApps.map((app) => (
             <li class={`proof-item proof-item--${app.status.tone}`}>
               <a href={`#${app.slug}`} class="proof-item__name">{app.name}</a>
+              {app.pitch && <span class="proof-item__pitch">{app.pitch}</span>}
               <span class="proof-item__status">{app.status.label}</span>
             </li>
           ))}
@@ -388,6 +389,11 @@ const capabilities = [
     color: var(--color-accent);
   }
 
+  .proof-item__pitch {
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: #b7b0aa;
+  }
   .proof-item__status {
     font-size: 0.9rem;
     color: var(--tone-color);
